@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="css/photon.min.css">
+    <link rel="stylesheet" href="codemirror/codemirror.css">
+    <link rel="stylesheet" href="codemirror/midnight.css">
+    <link rel="stylesheet" href="codemirror/tomorrow-night-eighties.css">
+    <link rel="stylesheet" href="codemirror/monokai.css">
+    <link rel="stylesheet" href="codemirror/material.css">
+    <style>
+      .CodeMirror {
+        height: 200px;
+      }
+      .history {
+        overflow: scroll;
+      }
+      .type {
+        background-color: #f5f5f4;
+        padding: 4px;
+        border-radius: 4px;
+        position: absolute;
+        right: 20px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+
+      <div class="window">
+        <header class="toolbar toolbar-header">
+          <h1 class="title">Delivery</h1>
+          <div class="toolbar-actions">
+              <div class="btn-group">
+                <button class="btn btn-default active">
+                  <span class="icon icon-home"></span>
+                </button>
+                <button class="btn btn-default">
+                  <span class="icon icon-folder"></span>
+                </button>
+                <button class="btn btn-default">
+                  <span class="icon icon-cloud"></span>
+                </button>
+                <button class="btn btn-default">
+                  <span class="icon icon-popup"></span>
+                </button>
+                <button class="btn btn-default">
+                  <span class="icon icon-shuffle"></span>
+                </button>
+              </div>
+          
+              <button class="btn btn-default">
+                <span class="icon icon-home icon-text"></span>
+                Filters
+              </button>
+          
+              <button class="btn btn-default btn-dropdown pull-right">
+                <span class="icon icon-megaphone"></span>
+              </button>
+            </div>
+        </header>
+        <div class="window-content">
+          <div class="pane-group">
+              <div class="pane-sm sidebar history">
+              </div>
+              <div class="pane">
+                <div class="padded-more">
+                  <form>
+                    <div class="form-group">
+                      <label>Server address</label>
+                      <input type="url" class="form-control server" placeholder="grpc.server.com:443" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Method name</label>
+                      <input type="text" class="form-control method" placeholder="my.custom.server.Service/Method" required>
+                    </div>
+                    <div class="form-group">
+                      <label>Body <span class="type">application/json</span></label>
+                      <textarea class="form-control codemirror body"></textarea>
+                    </div>
+                    <div class="form-actions">
+                      <button type="submit" class="btn btn-form btn-default reset">Reset</button>
+                      <button type="submit" class="btn btn-form btn-primary send">Send</button>
+                    </div>
+                  </form>
+                  <div class="output">
+                      <hr>
+                      <form>
+                        <div class="form-group">
+                          <label>Server response</label>
+                          <textarea class="form-control codemirror response"></textarea>
+                        </div>
+                      </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+      </div>
+
+      <script src="app.js"></script>
+  </body>
+</html>
