@@ -22,6 +22,7 @@ function extractMethods(serviceWithMethods) {
     const name = matchSafe(rpcRaw, /rpc [a-zA-Z0-9]+/).join('').replace(/rpc /gm, '');
     const path = `${servicePath}/${name}`;
     return {
+      raw: rpcRaw,
       type: 'rpc',
       serviceName,
       servicePath,
@@ -32,6 +33,7 @@ function extractMethods(serviceWithMethods) {
     };
   });
   return {
+    raw: serviceWithMethods,
     type: 'service',
     name: serviceName,
     path: servicePath,
@@ -52,6 +54,7 @@ function extractMessage(message) {
   });
 
   return {
+    raw: message,
     type: 'message',
     name,
     path,
@@ -119,16 +122,25 @@ function createExamples(service, messages) {
   });
 
   const newMethods = service.methods.map(method => Object.assign(method, {
-    example: newMessages[method.request],
+    example: newMessages[method.request].example,
   }));
   return Object.assign(service, { methods: newMethods });
 }
 
+const history = {};
 export default function detect(url) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
+    const cooldown = 300000; // 30 mins
+    const now = new Date().getTime();
+    if (history[url] && now - history[url].lastCreated < cooldown) {
+      console.log('waiting with listing', now - history[url].lastCreated);
+      return history[url];
+    }
+    let result = { url };
     grpcurl.list(url)
       .then((rawServices) => {
         const services = rawServices.split('\n').map(item => item.trim()).filter(item => item.length);
+        result = Object.assign({ rawServices, services }, result);
         Promise.all(
           services.map(service => grpcurl.describe(url, service)),
         ).then((servicesDescribed) => {
@@ -139,15 +151,28 @@ export default function detect(url) {
               .map(method => method.request)
               .reduce((a, b) => a.concat(b), []))
             .reduce((a, b) => a.concat(b), []);
-
+          result = Object.assign({ servicesDescribed, servicesParsed, rawMessages }, result);
           getMessages([], url, rawMessages).then((messagesParsed) => {
-            const servicesWithExample = servicesParsed.map(service => createExamples(service, messagesParsed));
-            resolve({
-              messages: messagesParsed,
-              services: servicesWithExample,
-            });
-          });
-        });
-      });
+            const servicesWithExample = servicesParsed
+              .map(service => createExamples(service, messagesParsed));
+            result = Object.assign({
+              messagesParsed,
+              servicesWithExample,
+              lastCreated: new Date().getTime(),
+            }, result);
+            history[url] = result;
+            resolve(result);
+          }).catch(e => reject(Object.assign(result, {
+            error: true,
+            cause: `${e}`,
+          })));
+        }).catch(e => reject(Object.assign(result, {
+          error: true,
+          cause: `${e}`,
+        })));
+      }).catch(e => reject(Object.assign(result, {
+        error: true,
+        cause: `${e}`,
+      })));
   });
 }

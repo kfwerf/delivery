@@ -5,6 +5,7 @@ export const BODY_TYPES = {
 };
 
 export const INPUT_FIELDS = {
+  AUTOMETHODS: 'automethods',
   AUTODETECT: 'autodetect',
   ID: 'id',
   URL: 'url',
@@ -13,7 +14,7 @@ export const INPUT_FIELDS = {
   BODY_TYPE: 'bodyType',
   RESPONSE: 'response',
   SEND: 'send',
-  reset: 'reset',
+  RESET: 'reset',
 };
 
 export const codeMirrorConfig = {

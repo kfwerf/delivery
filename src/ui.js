@@ -3,10 +3,12 @@ import 'codemirror/mode/shell/shell';
 import codeMirror from 'codemirror';
 import grpcurl from './grpcurl';
 import detect from './autodetect';
+import { js } from 'js-beautify';
 import { INPUT_FIELDS, BODY_TYPES, codeMirrorConfig, setState, getState, stateEvent, getId, equals } from './app';
 
 // Input
 const inputFields = {
+  [INPUT_FIELDS.AUTOMETHODS]: document.querySelector('div.automethods'),
   [INPUT_FIELDS.AUTODETECT]: document.querySelector('button.autodetect'),
   [INPUT_FIELDS.URL]: document.querySelector('input.server'),
   [INPUT_FIELDS.METHOD]: document.querySelector('input.method'),
@@ -54,7 +56,7 @@ function onStateChange() {
   inputFields[INPUT_FIELDS.URL].value = state[INPUT_FIELDS.URL];
   inputFields[INPUT_FIELDS.METHOD].value = state[INPUT_FIELDS.METHOD];
   if (typeof state[INPUT_FIELDS.BODY] === 'string') {
-    inputFields[INPUT_FIELDS.BODY].setValue(state[INPUT_FIELDS.BODY]);
+    inputFields[INPUT_FIELDS.BODY].setValue(js(state[INPUT_FIELDS.BODY]));
   }
   inputFields[INPUT_FIELDS.BODY_TYPE].value = state[INPUT_FIELDS.BODY_TYPE];
 }
@@ -90,11 +92,41 @@ function onSend(e) {
   }
 }
 
+function onAutoMethod(results, e) {
+  const method = results.servicesWithExample
+    .map(service => service.methods)
+    .reduce((a, b) => a.concat(b), [])
+    .filter(rpc => rpc.path === e.target.value)[0];
+  if (method) {
+    console.log('auto methoding', method);
+    inputFields[INPUT_FIELDS.METHOD].value = method.path;
+    inputFields[INPUT_FIELDS.BODY].setValue(js(JSON.stringify(method.example)));
+  }
+}
+
 function onAutodetect(e) {
   e.preventDefault();
   const state = inputToState();
-  console.log('autodetecting... send', state[INPUT_FIELDS.URL]);
-  detect(state[INPUT_FIELDS.URL]).then(results => console.log(results));
+  console.log('autodetecting...', state[INPUT_FIELDS.URL]);
+  detect(state[INPUT_FIELDS.URL]).then((results) => {
+    console.log('autodetected', results);
+    const methods = results.servicesWithExample
+      .map(service => service.methods
+        .map(method => `<option value="${method.path}">${method.serviceName}/${method.name}</option>`))
+      .reduce((a, b) => a.concat(b), []);
+
+    if (inputFields[INPUT_FIELDS.AUTOMETHODS].querySelector('.automethods-select')) {
+      inputFields[INPUT_FIELDS.AUTOMETHODS].querySelector('.automethods-select')
+        .removeEventListener('change', onAutoMethod);
+    }
+    inputFields[INPUT_FIELDS.AUTOMETHODS].innerHTML = `
+      <select class="automethods-select form-control">
+        ${methods}
+      </select>
+    `;
+    inputFields[INPUT_FIELDS.AUTOMETHODS].querySelector('.automethods-select')
+      .addEventListener('change', onAutoMethod.bind(null, results));
+  });
 }
 
 // Event listeners
