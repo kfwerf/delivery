@@ -2,7 +2,8 @@ import cmd from 'node-cmd';
 
 const grpcurlWrapper = (params) => new Promise((resolve, reject) => {
   try {
-    cmd.get(`${__dirname}/bin/grpcurl ${params}`, (err, data, sterr) => {
+    console.log('using grpc', params);
+    cmd.get(`${__dirname}/bin/grpcurl -plaintext -max-time 5 ${params}`, (err, data, sterr) => {
       resolve(data || err || sterr);
     });
   } catch (e) {
@@ -11,11 +12,21 @@ const grpcurlWrapper = (params) => new Promise((resolve, reject) => {
   }
 });
 
+const sendWithBody = ({ body, url, method }) => grpcurlWrapper(`-d '${body}' ${url} ${method}`);
+const sendEmpty = ({ url, method }) => grpcurlWrapper(`${url} ${method}`);
+
 const grpcurl = {
   help: () => grpcurlWrapper('-help'),
   version: () => grpcurlWrapper('-version'),
-  send: ({ body, url, method }) => grpcurlWrapper(`-d ${body} ${url} ${method}`),
-  sendEmpty: ({ url, method }) => grpcurlWrapper(`${url} ${method}`),
+  send: ({ body, url, method }) => {
+    const hasBody = body && body.length > 3;
+    if (hasBody) {
+      return sendWithBody({ body, url, method });
+    }
+    return sendEmpty({ url, method });
+  },
+  list: url => grpcurlWrapper(`${url} list`),
+  describe: (url, method) => grpcurlWrapper(`${url} describe ${method}`),
 };
 
 export default grpcurl;

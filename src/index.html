@@ -10,8 +10,11 @@
     <link rel="stylesheet" href="codemirror/monokai.css">
     <link rel="stylesheet" href="codemirror/material.css">
     <style>
-      .CodeMirror {
+      .body {
         height: 200px;
+      }
+      .response {
+        height: 550px;
       }
       .history {
         overflow: scroll;
@@ -69,11 +72,14 @@
                   <form>
                     <div class="form-group">
                       <label>Server address</label>
-                      <input type="url" class="form-control server" placeholder="grpc.server.com:443" required>
+                      <input type="url" class="form-control server" placeholder="localhost:443" required>
+                    </div>
+                    <div class="form-group">
+                      <button type="submit" class="btn btn-form btn-primary autodetect">Autodetect</button>
                     </div>
                     <div class="form-group">
                       <label>Method name</label>
-                      <input type="text" class="form-control method" placeholder="my.custom.server.Service/Method" required>
+                      <input type="text" class="form-control method" placeholder="packagename.serviceName/Method" required>
                     </div>
                     <div class="form-group">
                       <label>Body <span class="type">application/json</span></label>
@@ -98,7 +104,7 @@
             </div>
         </div>
       </div>
-
-      <script src="app.js"></script>
+      <script src="history.js"></script>
+      <script src="ui.js"></script>
   </body>
 </html>
