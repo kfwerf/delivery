@@ -2,13 +2,12 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>Delivery</title>
+    <link rel="stylesheet" href="css/selectize.css">
+    <link rel="stylesheet" href="css/selectize.default.css">
     <link rel="stylesheet" href="css/photon.min.css">
-    <link rel="stylesheet" href="codemirror/codemirror.css">
-    <link rel="stylesheet" href="codemirror/midnight.css">
-    <link rel="stylesheet" href="codemirror/tomorrow-night-eighties.css">
-    <link rel="stylesheet" href="codemirror/monokai.css">
-    <link rel="stylesheet" href="codemirror/material.css">
+    <link rel="stylesheet" href="css/codemirror.css">
+    <link rel="stylesheet" href="css/monokai.css">
     <style>
       .body {
         height: 200px;
@@ -27,88 +26,55 @@
         right: 20px;
         font-size: 12px;
       }
+
+    .hidden {
+      opacity: 0;
+      transform: scale(0,0);
+      pointer-events: none;
+    }
     </style>
   </head>
   <body>
-
-      <div class="window">
-        <header class="toolbar toolbar-header">
-          <h1 class="title">Delivery</h1>
-          <div class="toolbar-actions">
-              <div class="btn-group">
-                <button class="btn btn-default active">
-                  <span class="icon icon-home"></span>
-                </button>
-                <button class="btn btn-default">
-                  <span class="icon icon-folder"></span>
-                </button>
-                <button class="btn btn-default">
-                  <span class="icon icon-cloud"></span>
-                </button>
-                <button class="btn btn-default">
-                  <span class="icon icon-popup"></span>
-                </button>
-                <button class="btn btn-default">
-                  <span class="icon icon-shuffle"></span>
-                </button>
-              </div>
-          
-              <button class="btn btn-default">
-                <span class="icon icon-home icon-text"></span>
-                Filters
-              </button>
-          
-              <button class="btn btn-default btn-dropdown pull-right">
-                <span class="icon icon-megaphone"></span>
-              </button>
-            </div>
-        </header>
-        <div class="window-content">
-          <div class="pane-group">
-              <div class="pane-sm sidebar history">
-              </div>
-              <div class="pane">
-                <div class="padded-more">
+  <div class="window">
+    <div class="window-content">
+      <div class="pane-group">
+          <div class="pane-sm sidebar history">
+          </div>
+          <div class="pane">
+            <div class="padded-more">
+              <form>
+                <div class="form-group">
+                  <label>Server address</label>
+                  <select name="url" id="url" class="url selectize server"></select>
+                </div>
+                <div class="form-group">
+                  <label>Method name</label>
+                  <select name="method" id="method" class="method selectize"></select>
+                </div>
+                <div class="form-group">
+                  <label>Body <span class="type">application/json</span></label>
+                  <textarea class="form-control codemirror body"></textarea>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-form btn-default reset">Reset</button>
+                  <button type="submit" class="btn btn-form btn-primary send">Send</button>
+                </div>
+              </form>
+              <div class="output hidden">
+                  <hr>
                   <form>
                     <div class="form-group">
-                      <label>Server address</label>
-                      <input type="url" class="form-control server" placeholder="localhost:443" required>
-                    </div>
-                    <div class="form-group">
-                      <button type="submit" class="btn btn-form btn-primary autodetect">Autodetect</button>
-                    </div>
-                    <div class="form-group">
-                      <label for="automethods">Choose a method</label>
-                      <div class="automethods"></div>
-                    </div>
-                    <div class="form-group">
-                      <label>Method name</label>
-                      <input type="text" class="form-control method" placeholder="packagename.serviceName/Method" required>
-                    </div>
-                    <div class="form-group">
-                      <label>Body <span class="type">application/json</span></label>
-                      <textarea class="form-control codemirror body"></textarea>
-                    </div>
-                    <div class="form-actions">
-                      <button type="submit" class="btn btn-form btn-default reset">Reset</button>
-                      <button type="submit" class="btn btn-form btn-primary send">Send</button>
+                      <label>Server response</label>
+                      <textarea class="form-control codemirror response"></textarea>
                     </div>
                   </form>
-                  <div class="output">
-                      <hr>
-                      <form>
-                        <div class="form-group">
-                          <label>Server response</label>
-                          <textarea class="form-control codemirror response"></textarea>
-                        </div>
-                      </form>
-                  </div>
-                </div>
               </div>
             </div>
+          </div>
         </div>
-      </div>
-      <script src="history.js"></script>
-      <script src="ui.js"></script>
+    </div>
+  </div>
+  <script src="history.js"></script>
+  <script src="ui.js"></script>
   </body>
 </html>

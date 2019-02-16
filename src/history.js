@@ -36,9 +36,6 @@ function createEmptyHistoryElement() {
 function createHistoryList(items) {
   const list = items.length ? items : createEmptyHistoryElement();
   return `<ul class="list-group">
-    <li class="list-group-header">
-      <input class="form-control" type="text" placeholder="Search through the history">
-    </li>
     ${list}
   </ul>`;
 }

@@ -5,7 +5,6 @@ export const BODY_TYPES = {
 };
 
 export const INPUT_FIELDS = {
-  AUTOMETHODS: 'automethods',
   AUTODETECT: 'autodetect',
   ID: 'id',
   URL: 'url',
@@ -27,6 +26,7 @@ export const codeMirrorConfig = {
 
 let state = {
   [INPUT_FIELDS.ID]: null,
+  [INPUT_FIELDS.AUTODETECT]: null,
   [INPUT_FIELDS.URL]: null,
   [INPUT_FIELDS.METHOD]: null,
   [INPUT_FIELDS.BODY]: null,

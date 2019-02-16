@@ -1,17 +1,29 @@
 import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/shell/shell';
 import codeMirror from 'codemirror';
+import { js } from 'js-beautify';
+import jQuery from 'jquery';
+import 'selectize';
+
 import grpcurl from './grpcurl';
 import detect from './autodetect';
-import { js } from 'js-beautify';
 import { INPUT_FIELDS, BODY_TYPES, codeMirrorConfig, setState, getState, stateEvent, getId, equals } from './app';
 
 // Input
 const inputFields = {
-  [INPUT_FIELDS.AUTOMETHODS]: document.querySelector('div.automethods'),
   [INPUT_FIELDS.AUTODETECT]: document.querySelector('button.autodetect'),
-  [INPUT_FIELDS.URL]: document.querySelector('input.server'),
-  [INPUT_FIELDS.METHOD]: document.querySelector('input.method'),
+  [INPUT_FIELDS.URL]: jQuery('.url').selectize({
+    create: true,
+    createFilter: url => url.length > 3,
+    sortField: 'text',
+    placeholder: 'localhost:443',
+  })[0].selectize,
+  [INPUT_FIELDS.METHOD]: jQuery('.method').selectize({
+    create: true,
+    createFilter: method => method.length > 3,
+    sortField: 'text',
+    placeholder: 'packagename.serviceName/Method',
+  })[0].selectize,
   [INPUT_FIELDS.BODY_TYPE]: document.querySelector('.type'),
   [INPUT_FIELDS.BODY]: codeMirror.fromTextArea(
     document.querySelector('.body'),
@@ -53,8 +65,12 @@ function validateState(newState) {
 
 function onStateChange() {
   const state = getState();
-  inputFields[INPUT_FIELDS.URL].value = state[INPUT_FIELDS.URL];
-  inputFields[INPUT_FIELDS.METHOD].value = state[INPUT_FIELDS.METHOD];
+  console.log('onStateChange');
+  
+  inputFields[INPUT_FIELDS.URL].createItem(state[INPUT_FIELDS.URL]);
+  onAutodetect().then()
+  
+  inputFields[INPUT_FIELDS.METHOD].createItem(state[INPUT_FIELDS.METHOD]);
   if (typeof state[INPUT_FIELDS.BODY] === 'string') {
     inputFields[INPUT_FIELDS.BODY].setValue(js(state[INPUT_FIELDS.BODY]));
   }
@@ -64,8 +80,8 @@ function onStateChange() {
 function inputToState() {
   return Object.assign({
     id: getId(),
-    [INPUT_FIELDS.URL]: inputFields[INPUT_FIELDS.URL].value,
-    [INPUT_FIELDS.METHOD]: inputFields[INPUT_FIELDS.METHOD].value,
+    [INPUT_FIELDS.URL]: inputFields[INPUT_FIELDS.URL].getValue(),
+    [INPUT_FIELDS.METHOD]: inputFields[INPUT_FIELDS.METHOD].getValue(),
   }, parseBody(inputFields[INPUT_FIELDS.BODY].getValue()));
 }
 
@@ -92,45 +108,50 @@ function onSend(e) {
   }
 }
 
-function onAutoMethod(results, e) {
-  const method = results.servicesWithExample
-    .map(service => service.methods)
-    .reduce((a, b) => a.concat(b), [])
-    .filter(rpc => rpc.path === e.target.value)[0];
-  if (method) {
-    console.log('auto methoding', method);
-    inputFields[INPUT_FIELDS.METHOD].value = method.path;
-    inputFields[INPUT_FIELDS.BODY].setValue(js(JSON.stringify(method.example)));
-  }
-}
-
-function onAutodetect(e) {
-  e.preventDefault();
-  const state = inputToState();
-  console.log('autodetecting...', state[INPUT_FIELDS.URL]);
-  detect(state[INPUT_FIELDS.URL]).then((results) => {
+function onAutodetect(url) {
+  console.log('autodetecting...', url);
+  return detect(url).then((results) => {
     console.log('autodetected', results);
-    const methods = results.servicesWithExample
-      .map(service => service.methods
-        .map(method => `<option value="${method.path}">${method.serviceName}/${method.name}</option>`))
-      .reduce((a, b) => a.concat(b), []);
-
-    if (inputFields[INPUT_FIELDS.AUTOMETHODS].querySelector('.automethods-select')) {
-      inputFields[INPUT_FIELDS.AUTOMETHODS].querySelector('.automethods-select')
-        .removeEventListener('change', onAutoMethod);
-    }
-    inputFields[INPUT_FIELDS.AUTOMETHODS].innerHTML = `
-      <select class="automethods-select form-control">
-        ${methods}
-      </select>
-    `;
-    inputFields[INPUT_FIELDS.AUTOMETHODS].querySelector('.automethods-select')
-      .addEventListener('change', onAutoMethod.bind(null, results));
+    inputFields[INPUT_FIELDS.METHOD].clear(true);
+    inputFields[INPUT_FIELDS.METHOD].clearOptions();
+    results.servicesWithExample.forEach((service) => {
+      inputFields[INPUT_FIELDS.METHOD]
+        .addOptionGroup(service.path, {
+          label: service.name,
+          value: service.path,
+          url,
+          service,
+        });
+      service.methods.forEach((method) => {
+        inputFields[INPUT_FIELDS.METHOD].addOption({
+          optgroup: service.path,
+          text: method.path,
+          value: method.path,
+          url,
+          service,
+          method,
+        });
+      });
+    });
+    inputFields[INPUT_FIELDS.METHOD].refreshOptions(false);
+    return results;
+  }).catch((err) => {
+    console.log(err);
+    return err;
   });
 }
 
+function onMethodChange(key) {
+  const option = inputFields[INPUT_FIELDS.METHOD].options[key];
+  if (option.method) {
+    inputFields[INPUT_FIELDS.BODY].setValue(js(JSON.stringify(option.method.example)));
+  }
+}
+
 // Event listeners
-inputFields[INPUT_FIELDS.AUTODETECT].addEventListener('click', onAutodetect);
-inputFields[INPUT_FIELDS.SEND].addEventListener('click', onSend);
 stateEvent.addEventListener('change', onStateChange);
+
+inputFields[INPUT_FIELDS.URL].on('change', onAutodetect);
+inputFields[INPUT_FIELDS.METHOD].on('change', onMethodChange);
+inputFields[INPUT_FIELDS.SEND].addEventListener('click', onSend);
 onStateChange();

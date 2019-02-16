@@ -127,16 +127,42 @@ function createExamples(service, messages) {
   return Object.assign(service, { methods: newMethods });
 }
 
+function setStorage(items) {
+  localStorage.setItem('autodetecthistory', JSON.stringify(items));
+}
+
+function getStorage() {
+  try {
+    return JSON.parse(localStorage.getItem('autodetecthistory')) || {};
+  } catch (_) {
+    return {};
+  }
+}
+
 const history = {};
-export default function detect(url) {
+const setHistory = (url, data) => {
+  history[url] = data;
+  setStorage(history);
+};
+
+const isCached = (url) => {
+  const cooldown = 300000; // 30 mins
+  const now = new Date().getTime();
+  if (history[url] && now - history[url].lastCreated < cooldown) {
+    console.log('waiting with listing', now - history[url].lastCreated);
+    return true;
+  }
+  return false;
+};
+
+export default function detect(url, ignoreCooldown) {
   return new Promise((resolve, reject) => {
-    const cooldown = 300000; // 30 mins
-    const now = new Date().getTime();
-    if (history[url] && now - history[url].lastCreated < cooldown) {
-      console.log('waiting with listing', now - history[url].lastCreated);
-      return history[url];
-    }
     let result = { url };
+    if (isCached(url, ignoreCooldown)) {
+      console.log('Using cache', history[url]);
+      return resolve(history[url]);
+    }
+
     grpcurl.list(url)
       .then((rawServices) => {
         const services = rawServices.split('\n').map(item => item.trim()).filter(item => item.length);
@@ -161,6 +187,8 @@ export default function detect(url) {
               lastCreated: new Date().getTime(),
             }, result);
             history[url] = result;
+
+            setHistory(url, result);
             resolve(result);
           }).catch(e => reject(Object.assign(result, {
             error: true,
@@ -176,3 +204,9 @@ export default function detect(url) {
       })));
   });
 }
+
+const stored = getStorage();
+Object.keys(stored).forEach((key) => {
+  const item = stored[key];
+  history[key] = item;
+});

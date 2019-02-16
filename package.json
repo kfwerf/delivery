@@ -1,8 +1,8 @@
 {
   "name": "delivery",
-  "productName": "delivery",
+  "productName": "Delivery",
   "version": "0.0.1",
-  "description": "My Electron application description",
+  "description": "GRPC GUI wrapper for GRPCurl",
   "main": "src/index.js",
   "scripts": {
     "start": "electron-forge start",
@@ -32,7 +32,8 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "npm"
+        "packageManager": "npm",
+        "icon": "src/AppIcon.icns"
       },
       "electronWinstallerConfig": {
         "name": "delivery"
@@ -50,15 +51,18 @@
     }
   },
   "dependencies": {
+    "codemirror": "^5.43.0",
     "electron-compile": "^6.4.4",
     "electron-squirrel-startup": "^1.0.0",
-    "js-beautify": "^1.8.9"
+    "jquery": "^3.3.1",
+    "js-beautify": "^1.8.9",
+    "node-cmd": "^3.0.0",
+    "selectize": "^0.12.6"
   },
   "devDependencies": {
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
-    "codemirror": "^5.43.0",
     "cryptiles": ">=4.1.2",
     "electron-forge": "^5.2.4",
     "electron-prebuilt-compile": "4.0.0",
@@ -67,7 +71,6 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.12.4",
-    "hoek": ">=4.2.1",
-    "node-cmd": "^3.0.0"
+    "hoek": ">=4.2.1"
   }
 }
