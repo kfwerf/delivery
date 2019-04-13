@@ -20,4 +20,5 @@ simplify the interaction between you and GRPCurl.
 There is a first version (0.0.1), there might be bugs. If there are please file a ticket.
 
 ### V0.0.1
+[Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.0.1/Delivery-darwin-x64-0.0.1.zip)
 
