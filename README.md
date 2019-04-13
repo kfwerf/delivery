@@ -1,3 +1,5 @@
+![Logo](https://raw.githubusercontent.com/kfwerf/delivery/master/screenshot/logo.png)
+
 # Delivery for GRPC
 ![Screenshot](https://raw.githubusercontent.com/kfwerf/delivery/master/screenshot/wip2.png)
 GRPC GUI client for GRPCurl
