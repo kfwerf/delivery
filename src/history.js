@@ -58,6 +58,7 @@ function onHistory(evt) {
 function updateHistoryElements() {
   const items = history.concat([])
     .reverse()
+    .filter(item => item.id)
     .map((item, idx) => createHistoryElement(item, idx))
     .reduce((a, b) => `${a}${b}`, '');
 

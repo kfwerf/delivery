@@ -4,7 +4,7 @@ export const BODY_TYPES = {
   TEXT: 'text',
 };
 
-export const STATE = {
+export const INPUT_FIELDS = {
   AUTODETECT: 'autodetect',
   ID: 'id',
   URL: 'url',
@@ -26,11 +26,10 @@ export const codeMirrorConfig = {
 };
 
 let state = {
-  [STATE.ID]: null,
-  [STATE.URL]: null,
-  [STATE.METHOD]: null,
-  [STATE.BODY]: null,
-  [STATE.BODY_TYPE]: null,
+  [INPUT_FIELDS.ID]: null,
+  [INPUT_FIELDS.URL]: null,
+  [INPUT_FIELDS.METHOD]: null, // key is url
+  [INPUT_FIELDS.BODY]: null, // key is url.metod
 };
 
 export function equals(a, b) {
@@ -39,9 +38,9 @@ export function equals(a, b) {
 
 export const stateEvent = document.createElement('div');
 
-function dispatchStateChanged(oldState, newState) {
+function dispatchStateChanged(eventElement, oldState, newState) {
   const event = new CustomEvent('change', { detail: { oldState, newState } });
-  stateEvent.dispatchEvent(event);
+  eventElement.dispatchEvent(event);
 }
 
 export function getId() {
