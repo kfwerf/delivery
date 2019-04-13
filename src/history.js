@@ -58,7 +58,6 @@ function onHistory(evt) {
 function updateHistoryElements() {
   const items = history.concat([])
     .reverse()
-    .filter(item => item.id)
     .map((item, idx) => createHistoryElement(item, idx))
     .reduce((a, b) => `${a}${b}`, '');
 
@@ -94,24 +93,22 @@ function getStorage() {
   }
 }
 
-function onStateChanged() {
-  const newState = getState();
-  updateHistory(newState);
-  updateHistoryElements();
-  setStorage(history);
+function onStateChanged(e) {
+  const newState = e.detail.state;
+  if (newState.id) {
+    updateHistory(newState);
+    updateHistoryElements();
+    setStorage(history);
+  }
 }
 
 stateEvent.addEventListener('change', onStateChanged);
 
 const stored = getStorage();
-stored.forEach((item, i) => {
-  const isLast = i === stored.length - 1;
-  if (isLast) {
-    setState(item);
-  } else {
-    updateHistory(item);
-  }
+stored.forEach((item) => {
+  updateHistory(item);
 });
+updateHistoryElements();
 if (!stored.length) {
   updateHistoryElements();
 }

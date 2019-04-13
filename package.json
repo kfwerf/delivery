@@ -71,6 +71,7 @@
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-jsx-a11y": "^5.1.1",
     "eslint-plugin-react": "^7.12.4",
-    "hoek": ">=4.2.1"
+    "hoek": ">=4.2.1",
+    "lodash": "^4.17.11"
   }
 }
