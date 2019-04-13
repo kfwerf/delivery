@@ -1,8 +1,8 @@
 # Delivery for GRPC
+![Logo](https://raw.githubusercontent.com/kfwerf/delivery/master/screenshot/logo.png)
 ![Screenshot](https://raw.githubusercontent.com/kfwerf/delivery/master/screenshot/wip2.png)
 
-##GRPC GUI client for GRPCurl
-![Logo](https://raw.githubusercontent.com/kfwerf/delivery/master/screenshot/logo.png)
+GRPC GUI client for GRPCurl
 
 ## What is it?
 TL;DR; GRPCurl wrapper that auto detects methods and persists all history of requests,
