@@ -4,11 +4,12 @@ export const BODY_TYPES = {
   TEXT: 'text',
 };
 
-export const INPUT_FIELDS = {
+export const STATE = {
   AUTODETECT: 'autodetect',
   ID: 'id',
   URL: 'url',
   METHOD: 'method',
+  METHODS: 'methods',
   BODY: 'body',
   BODY_TYPE: 'bodyType',
   RESPONSE: 'response',
@@ -25,12 +26,11 @@ export const codeMirrorConfig = {
 };
 
 let state = {
-  [INPUT_FIELDS.ID]: null,
-  [INPUT_FIELDS.AUTODETECT]: null,
-  [INPUT_FIELDS.URL]: null,
-  [INPUT_FIELDS.METHOD]: null,
-  [INPUT_FIELDS.BODY]: null,
-  [INPUT_FIELDS.BODY_TYPE]: null,
+  [STATE.ID]: null,
+  [STATE.URL]: null,
+  [STATE.METHOD]: null,
+  [STATE.BODY]: null,
+  [STATE.BODY_TYPE]: null,
 };
 
 export function equals(a, b) {
@@ -39,9 +39,8 @@ export function equals(a, b) {
 
 export const stateEvent = document.createElement('div');
 
-function dispatchStateChanged() {
-  const event = document.createEvent('HTMLEvents');
-  event.initEvent('change', true, false);
+function dispatchStateChanged(oldState, newState) {
+  const event = new CustomEvent('change', { detail: { oldState, newState } });
   stateEvent.dispatchEvent(event);
 }
 
@@ -50,12 +49,10 @@ export function getId() {
 }
 
 export function setState(newState) {
-  if (!newState.id) {
-    console.error('missing id');
-  }
   if (!equals(state, newState)) {
+    const oldState = Object.assign({}, state);
     state = Object.assign(state, newState);
-    dispatchStateChanged();
+    dispatchStateChanged(oldState, newState);
   }
 }
 

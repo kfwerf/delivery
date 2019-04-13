@@ -146,6 +146,7 @@ const setHistory = (url, data) => {
 };
 
 const isCached = (url) => {
+  return true; // FIXME
   const cooldown = 300000; // 30 mins
   const now = new Date().getTime();
   if (history[url] && now - history[url].lastCreated < cooldown) {

@@ -4,7 +4,7 @@ const history = [];
 const historyList = document.querySelector('.history');
 
 function getHistoryById(id) {
-  return history[history.findIndex(historyItem => historyItem.id === id)];
+  return id === null ? null : history[history.findIndex(historyItem => historyItem.id === id)];
 }
 
 function getElementByHistory(item) {
