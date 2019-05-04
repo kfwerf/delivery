@@ -1,7 +1,7 @@
 {
   "name": "delivery",
   "productName": "Delivery",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "GRPC GUI wrapper for GRPCurl",
   "main": "src/index.js",
   "scripts": {
