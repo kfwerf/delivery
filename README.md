@@ -18,10 +18,13 @@ lets say you where on server.fantastic.com and using method myMethod.v1.beautifu
 simplify the interaction between you and GRPCurl.
 
 ## Great, is it done?
-There is a first version (0.0.1), there might be bugs. If there are please file a ticket.
-
-### V0.0.1
 ![Logo](https://raw.githubusercontent.com/kfwerf/delivery/master/screenshot/logo.png)
 
+There is a first version (0.0.2), there might be bugs. If there are please file a ticket.
+
+### V0.0.2
+[Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.0.2/Delivery-darwin-x64-0.0.2.zip)
+
+### V0.0.1
 [Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.0.1/Delivery-darwin-x64-0.0.1.zip)
 
