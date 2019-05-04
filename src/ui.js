@@ -7,8 +7,8 @@ import jQuery from 'jquery';
 import 'selectize';
 
 import grpcurl from './grpcurl';
-import detect from './autodetect';
-import { codeMirrorConfig, setMethod, methodEvent, stateEvent, getMethod, getState, setState, getId, getUrls, setMethods, setBody, dispatchMethodCacheChanged } from './app';
+import detect, { getLogs } from './autodetect';
+import { codeMirrorConfig, setMethod, methodEvent, stateEvent, getMethod, getState, setState, getId, getUrls, setMethods, setBody, dispatchMethodCacheChanged, logsEvent } from './app';
 
 // Input
 const root = document;
@@ -38,9 +38,21 @@ const inputFields = {
       mode: 'shell',
       readOnly: true,
     })),
+  logs: codeMirror.fromTextArea(
+    root.querySelector('.logs'),
+    _.defaults(codeMirrorConfig, {
+      mode: 'shell',
+      readOnly: true,
+    })),
   send: root.querySelector('.send'),
   reset: root.querySelector('.reset'),
+  logsBtn: root.querySelector('.btn-logs'),
 };
+
+const methodLoader = root.querySelector('.loading-method');
+const methodContainer = root.querySelector('.method-group .selectize-control');
+
+const logsContainer = root.querySelector('.logs-group');
 
 function hasJson(body, inverse = true) {
   try {
@@ -64,7 +76,11 @@ function onUrlChange(url) {
   setState({
     url,
   });
+  methodContainer.classList.add('loading');
+  methodLoader.classList.remove('hidden');
   onAutodetect(url).then((results) => {
+    methodContainer.classList.remove('loading');
+    methodLoader.classList.add('hidden');
     if (results && results.servicesWithExample) {
       results.servicesWithExample.forEach((service) => {
         const methods = service.methods.map(method => _.defaults({
@@ -76,6 +92,9 @@ function onUrlChange(url) {
     } else {
       dispatchMethodCacheChanged();
     }
+  }).catch(() => {
+    methodContainer.classList.remove('loading');
+    methodLoader.classList.add('hidden');
   });
 }
 
@@ -201,6 +220,16 @@ function onStateChanged(e) {
   }
 }
 
+function onLogsToggle(e) {
+  e.preventDefault();
+  logsContainer.classList.toggle('hidden');
+}
+
+function onLogsChanged(e) {
+  const logs = e.detail.logs;
+  inputFields.logs.setValue(logs);
+}
+
 getUrls().forEach((url) => {
   inputFields.url.createItem(url);
 });
@@ -208,11 +237,13 @@ getUrls().forEach((url) => {
 // Event listeners
 methodEvent.addEventListener('change', onMethodCacheUpdated);
 stateEvent.addEventListener('change', onStateChanged);
+logsEvent.addEventListener('change', onLogsChanged);
 
 inputFields.url.on('change', onUrlChange);
 inputFields.method.on('change', onMethodChange);
 inputFields.body.on('change', onBodyChange);
 inputFields.send.addEventListener('click', onSend);
 inputFields.reset.addEventListener('click', onReset);
+inputFields.logsBtn.addEventListener('click', onLogsToggle);
 
 dispatchMethodCacheChanged();

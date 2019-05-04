@@ -1,4 +1,5 @@
 import grpcurl from './grpcurl';
+import { log } from './app';
 
 function matchSafe(string, regex) {
   return (string.match && string.match(regex)) || [];
@@ -96,7 +97,7 @@ function createPrimitive(type) {
     case 'bool':
       return true;
     default:
-      console.log('unknown type', type);
+      log('unknown type', type);
       return null;
   }
 }
@@ -149,7 +150,7 @@ const isCached = (url) => {
   const cooldown = 300000; // 30 mins
   const now = new Date().getTime();
   if (history[url] && now - history[url].lastCreated < cooldown) {
-    console.log('waiting with listing', now - history[url].lastCreated);
+    log('waiting with listing', now - history[url].lastCreated);
     return true;
   }
   return false;
@@ -159,7 +160,7 @@ export default function detect(url, ignoreCooldown) {
   return new Promise((resolve, reject) => {
     let result = { url };
     if (isCached(url, ignoreCooldown)) {
-      console.log('Using cache', history[url]);
+      log('Using cache', history[url]);
       return resolve(history[url]);
     }
 

@@ -1,17 +1,18 @@
 import cmd from 'node-cmd';
+import { log } from './app';
 
 const grpcurlWrapper = params => new Promise((resolve, reject) => {
   try {
-    console.log('using grpc', params);
+    log('using grpc', params);
     cmd.get(`${__dirname}/bin/grpcurl -plaintext -max-time 5 ${params}`, (err, data, sterr) => {
-      console.log(`${__dirname}/bin/grpcurl -plaintext -max-time 5 ${params}`, { err, data, sterr });
+      log(`${__dirname}/bin/grpcurl -plaintext -max-time 5 ${params}`, { err, data, sterr });
       if (sterr || err) {
         return reject(sterr || err);
       }
       return resolve(data);
     });
   } catch (e) {
-    console.log('Error occured', e);
+    log('Error occured', e);
     reject(e);
   }
 });

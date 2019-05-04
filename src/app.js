@@ -1,5 +1,8 @@
 import _ from 'lodash/core';
 
+const logsCache = [];
+const MAX_LOG_LIMIT = 100;
+
 const CACHE_LIMIT = 2000;
 
 export const codeMirrorConfig = {
@@ -71,6 +74,31 @@ export function equals(a, b) {
 
 export const methodEvent = document.createElement('div');
 export const stateEvent = document.createElement('div');
+export const logsEvent = document.createElement('div');
+
+export function dispatchLogsChanged() {
+  const logs = getLogs();
+  const event = new CustomEvent('change', { detail: { logs } });
+  logsEvent.dispatchEvent(event);
+}
+
+export function getLogs() {
+  return logsCache
+    .map(args => [...args]
+      .map(arg => JSON.stringify(arg))
+      .reduce((a, b) => a + ' ' + b))
+    .reduce((a, b) => a + '\n' + b, '');
+}
+
+export function log() {
+  if (logsCache.length > MAX_LOG_LIMIT) {
+    logsCache.shift();
+  } else {
+    logsCache.push(arguments);
+  }
+  console.log.apply(this, arguments);
+  dispatchLogsChanged();
+}
 
 export function dispatchMethodCacheChanged() {
   const methods = getMethodCache();

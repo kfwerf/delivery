@@ -26,12 +26,28 @@
         right: 20px;
         font-size: 12px;
       }
-
-    .hidden {
-      opacity: 0;
-      transform: scale(0,0);
-      pointer-events: none;
-    }
+      .form-group, .form-actions {
+        position: relative;
+      }
+      img[class^="loading-"] {
+        position: absolute;
+        top: 38px;
+        z-index: 1;
+        right: 40px;
+      }
+      .loading {
+        filter: blur(2px);
+        opacity: 0.2;
+      }
+      .hidden {
+        opacity: 0;
+        transform: scale(0,0);
+        pointer-events: none;
+      }
+      .logs-group.hidden {
+        height: 0;
+        overflow: hidden;
+      }
     </style>
   </head>
   <body>
@@ -46,18 +62,22 @@
                 <div class="form-group">
                   <label>Server address</label>
                   <select name="url" id="url" class="url selectize server"></select>
+                  <img src="loader.svg" alt="Loading" class="loading-server hidden">
                 </div>
-                <div class="form-group">
+                <div class="form-group method-group">
                   <label>Method name</label>
                   <select name="method" id="method" class="method selectize"></select>
+                  <img src="loader.svg" alt="Loading" class="loading-method hidden">
                 </div>
-                <div class="form-group">
+                <div class="form-group body-group">
                   <label>Body <span class="type">application/json</span></label>
                   <textarea class="form-control codemirror body"></textarea>
+                  <img src="loader.svg" alt="Loading" class="loading-body hidden">
                 </div>
                 <div class="form-actions">
                   <button type="submit" class="btn btn-form btn-default reset">Reset</button>
                   <button type="submit" class="btn btn-form btn-primary send">Send</button>
+                  <img src="loader.svg" alt="Loading" class="loading-send hidden">
                 </div>
               </form>
               <div class="output">
@@ -75,6 +95,10 @@
                   <div class="form-group">
                     <label>Tools</label><br>
                     <button type="submit" class="btn btn-form btn-default clearcache">Clear caches</button>
+                    <button type="submit" class="btn btn-form btn-default btn-logs">Logs</button>
+                  </div>
+                  <div class="form-group logs-group hidden">
+                    <textarea class="form-control codemirror logs"></textarea>
                   </div>
                 </form>
             </div>
