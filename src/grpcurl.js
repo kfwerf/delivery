@@ -1,11 +1,12 @@
 import cmd from 'node-cmd';
 import { log } from './app';
+import { execPath } from './binaries';
 
 const grpcurlWrapper = params => new Promise((resolve, reject) => {
   try {
     log('using grpc', params);
-    cmd.get(`${__dirname}/bin/grpcurl -plaintext -max-time 5 ${params}`, (err, data, sterr) => {
-      log(`${__dirname}/bin/grpcurl -plaintext -max-time 5 ${params}`, { err, data, sterr });
+    cmd.get(`${execPath} -plaintext -max-time 5 ${params}`, (err, data, sterr) => {
+      log(`${execPath} -plaintext -max-time 5 ${params}`, { err, data, sterr });
       if (sterr || err) {
         return reject(sterr || err);
       }
