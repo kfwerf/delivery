@@ -19,7 +19,7 @@ function extractMethods(serviceWithMethods) {
   const rpcList = matchSafe(serviceWithMethods, /rpc .+/gm);
   const methods = rpcList.map((rpcRaw) => {
     // const dependencies = rpcRaw.match(/[.][a-zA-Z[0-9.]*/gm);
-    const [request, response] = matchSafe(rpcRaw, /\(([^\)]+)\)/gm).map(args => args.match(/[.][.a-zA-Z0-9]+/g).join(''));
+    const [request, response] = matchSafe(rpcRaw, /\(([^\)]+)\)/gm).map(args => args.match(/[.][_.a-zA-Z0-9]+/g).join(''));
     const name = matchSafe(rpcRaw, /rpc [a-zA-Z0-9]+/).join('').replace(/rpc /gm, '');
     const path = `${servicePath}/${name}`;
     return {
