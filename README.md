@@ -3,6 +3,8 @@
 
 GRPC GUI client for GRPCurl
 
+[![Build Status](https://travis-ci.org/miguelbaldi/delivery.svg?branch=make-linux)](https://travis-ci.org/miguelbaldi/delivery)
+
 ## What is it?
 **TL;DR; GRPCurl wrapper that auto detects methods and persists all history of requests,
 thanks to [GRPCurl](https://github.com/fullstorydev/grpcurl).**
@@ -16,6 +18,10 @@ Because GRPCurl uses reflection we can auto detect everything. You fill in the u
 application auto detects the methods (thanks to GRPCurl). It has a history of what has been used before, so
 lets say you where on server.fantastic.com and using method myMethod.v1.beautiful/UnicornRainbows with { unicorns: true }. It will auto fill this in when clicking on the method or travelling to the server. It is meant to grossly
 simplify the interaction between you and GRPCurl.
+
+## Building
+
+
 
 ## Great, is it done?
 ![Logo](https://raw.githubusercontent.com/kfwerf/delivery/master/screenshot/logo.png)

@@ -1,0 +1,34 @@
+language: node_js
+node_js:
+- '13.9.0'
+
+os:                         # Simultaneous environments
+  - linux                   # Linux - for testing and future builds
+  - osx                     # Mac - for testing and builds
+cache:                      # Speed up builds by caching things
+  directories:              # Add directories relative to root
+  - node_modules            # cache node modules to save 1-3 minutes
+before_install:
+  - npm i -g npm@6.13.7     # Specify version of npm
+  - npm --version           # See what the running version of npm is
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      sudo add-apt-repository universe
+      sudo apt-get update;
+      sudo apt-get install fakeroot rpm;
+    fi
+before_deploy:              # Run these before attempting to deploy
+  - npm install             # Install electron-forge, may move to dev-dependencies in package.json
+  - npm run make            # Command that builds the app for the architecture
+deploy:                     # Configuration for releases
+  provider: releases
+  file_glob: true           # Set the mode for file to use *
+  file: out/make/*          # Upload all files generated during make/build
+  overwrite: true           # Overwrite the file if it exists
+  skip_cleanup: true        # Don't wait to cleanup
+  prerelease: true          # Don't make this the latest release, mark it as prerelease
+  draft: true               # Don't publish this to the public, make it a draft
+  on:                       # Tell it when to deploy/release
+    tags: true              # We only create a release on tags
+  api_key:                  # Github personal access token encrypted with travis encrypt command
+    secure: "UCCt6r50G52cZuzYmSxEd6njLuuCsbQhGLMbYhV0/WK2WV9pgn+OCdNgBiEEZ3MqdHOf2xO5MQYoWuqYEmTwa1lapqmag9rDLSZPa/haSTxMTA80xgqSjL3zEI/455IAkFDYUC6oLdwFn0aRHrIFLOlR3tNmBDnxuGQ9sFUvJSOzN7VuW8BUetN08e8QtrHiP3d7Nntm5uYT4aktxSaSzfcoplCYQsVj07IL46iODauxrnOj8yR/Xaa3qAnX2V5AE1/WKVumRKCSJLJh0QqyhBHXb90Q8W/IpDa1EUSbfAdGpKmvuCwV8o33ZjGVM7+uhQ3Yd90JAAsTWce8wZQZJ5Xc4MAD7ZQYF3w0ZOynhUqwxTQkq9o1AAZmIoyJr5YM0R9lp0m5ju8+as9czqiinAMpnMF3YIe9jGPZtrOhy2BURChdbpSxCHG3/NTPVOFxzpPsA3dVzQtXcvi9uT5QaUD7f6FAkRjyqyq5vq80bbb4Blx5e4fdk016a/FqlfGh5tUcluUwt3bx7NyxW3Rgi/DTCZfrsfZn5TuXYGBRDRsDqVkeJ4Lqww5NlO3TWS7tuSkuHSt3bLaLLN57w5DF7L0eazUeYatlHdO7AUt6v7jLm8Jsk3du+79D6ys3K1u/CCn0OP8pzxpM1BnxOGMPT8mMms7EUeqViKbGsfP257M="
