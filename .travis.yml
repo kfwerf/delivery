@@ -1,0 +1,42 @@
+language: node_js
+node_js:
+- '13.9.0'
+
+os:                         # Simultaneous environments
+  - linux                   # Linux - for testing and future builds
+  - osx                     # Mac - for testing and builds
+cache:                      # Speed up builds by caching things
+  directories:              # Add directories relative to root
+  - node_modules            # cache node modules to save 1-3 minutes
+before_install:
+  - npm i -g npm@6.13.7     # Specify version of npm
+  - npm --version           # See what the running version of npm is
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
+      sudo add-apt-repository universe
+      sudo apt-get update;
+      sudo apt-get install fakeroot rpm;
+    fi
+  - |
+    if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      echo "MacOS X";
+    fi
+before_deploy:              # Run these before attempting to deploy
+  - npm install             # Install electron-forge, may move to dev-dependencies in package.json
+  - npm run make            # Command that builds the app for the architecture
+deploy:                     # Configuration for releases
+  provider: releases
+  file_glob: true           # Set the mode for file to use *
+  file:                     # Upload all files generated during make/build
+    - out/make/*
+    - out/*/LICENSES.chromium.html
+    - out/*/LICENSE
+    - out/*/version
+  overwrite: true           # Overwrite the file if it exists
+  skip_cleanup: true        # Don't wait to cleanup
+  prerelease: false         # Don't make this the latest release, mark it as prerelease
+  draft: false              # Don't publish this to the public, make it a draft
+  on:                       # Tell it when to deploy/release
+    tags: true              # We only create a release on tags
+  api_key:                  # Github personal access token  with public repo permission, encrypted with travis encrypt command: travis encrypt <github_api_key>
+    secure: "Z+jJ/fUazYUnVELt8Qv4cNB1LIPIM3P009FJVJSBL1WUcPkm7Ev9zQokgD3PphtGOJABM8A5L1KrXUMkxI2w5SXHUnHPFOuk6yNqiPgs7GYl/rbwv7DNw9WDv8eiW2z9dUBEyaRiAhuCty9TkhAVs6+yEkzzftBhRURa8fLSM67WDkTR/uLoLUD+yduzAfiK0FPtqhX1RMYIEQpqs4x4QcfcRHvAKMjFcBCCRBaqkCghqWuPrD+lG8rWyD0GOfl6/w+wzm3YePkFTRZoAiXqCj92htQBW4R12ucJerNlQtc0VafvFlhiU/E+NJJQb2niVKm6F7+XZWDtT5vFFdpEysQ2/GyOOZSFWdZ04nHTIMvk9BY0ZZepJl4vm5vO7Fa+lE6SEL3rTQsujK2HiwWl7DG47tWNjENg6p/90WJNULCQsGyd1dQ+c034T0Pz4xA+7lkQkiQo4F86i5+NXawFZuW8+2Izk8GfcPc2K61O03kwkXIPNRv9riNeVXhe9iFZdRr6MWEk7huwPMKWdBsW00UhMEoRUFdc9qqqtueg9SkHYNcnTvpYXU0AXXAGbv52V2AUXDwB+6tulxX0cmb9RraGscQ9iTUgRR/ZHY5varss4aoYWuJ+HmR+diEdkE2QYYQVe2k3Y5cHa19JYwt68BBLX7qlI5JvnsBW+wWXuuE="
