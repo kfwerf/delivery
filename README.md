@@ -48,7 +48,7 @@ sudo dnf install dpkg-dev fakeroot
 Debian based distro:
 
 ```sh
-sudo apt-get install install rpm fakeroot
+sudo apt-get install rpm fakeroot
 ```
 
 ##### Installation
