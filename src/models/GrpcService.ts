@@ -26,6 +26,10 @@ export default class GrpcService {
     return this.servicePath;
   }
 
+  public getName(): string {
+    return this.serviceName;
+  }
+
   public getRpcList(): GrpcRpc[] {
     return this.rpcList;
   }

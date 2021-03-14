@@ -28,4 +28,12 @@ export default class GrpcRpc {
     public getRequest(): string {
       return this.request;
     }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public getPath(): string {
+        return this.path;
+    }
 }

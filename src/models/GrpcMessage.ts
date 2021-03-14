@@ -12,7 +12,7 @@ import {
 import {getName} from "../deserialization/service";
 import {fixType} from "../utils/string";
 import {toScalar, toScalarKey} from "../utils/conversion";
-import GrpcTypeRegistry from "../registry/typeregistry";
+import GrpcTypeRegistry from "../registry/registry";
 
 export default class GrpcMessage {
     private readonly response: GrpCurlResponse;
@@ -80,6 +80,10 @@ export default class GrpcMessage {
         return this.response.hasError();
     }
 
+    public getResponse(): GrpCurlResponse {
+        return this.response;
+    }
+
     public getExample(typeRegistry: GrpcTypeRegistry): Record<string, unknown> {
         // TODO: Move this possibly somewhere else
         const newExample = this.properties
@@ -98,7 +102,7 @@ export default class GrpcMessage {
                     if (property.isPrimitive()) {
                         return { [property.getKey()]: [toScalar(type)] };
                     }
-                    return { [property.getKey()]: [typeRegistry.get(fixType(type))?.getExample(typeRegistry)] };
+                    return { [property.getKey()]: [typeRegistry.getMessage(fixType(type))?.getExample(typeRegistry)] };
                 }
 
                 if (property.isMapped()) {
@@ -108,13 +112,13 @@ export default class GrpcMessage {
                     }
                     return {
                         [property.getKey()]: {
-                            [toScalarKey(keyType)]: typeRegistry.get(fixType(valueType))?.getExample(typeRegistry)
+                            [toScalarKey(keyType)]: typeRegistry.getMessage(fixType(valueType))?.getExample(typeRegistry)
                         }
                     };
                 }
 
                 if (!property.isPrimitive()) {
-                    const type = typeRegistry.get(property.getType());
+                    const type = typeRegistry.getMessage(property.getType());
                     if (type) {
                         return {
                             [property.getKey()]: type.getExample(typeRegistry),
