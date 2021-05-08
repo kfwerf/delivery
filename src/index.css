@@ -24,10 +24,6 @@ img[class^="loading-"] {
   z-index: 1;
   right: 40px;
 }
-.loading {
-  filter: blur(2px);
-  opacity: 0.2;
-}
 .hidden {
   opacity: 0;
   transform: scale(0,0);
@@ -47,9 +43,29 @@ img[class^="loading-"] {
 label[for^="body-"] {
   padding: 0 20px 0 20px;
 }
+.loader-relative {
+  position: relative;
+}
 .loader {
   background-image: url(loader.svg), none;
-  width: 32px;
-  height: 32px;
-  display: none;
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  bottom: 50%;
+  transform: translateY(50%);
+  left: 10px;
+  margin: 2px;
+}
+.loading {
+  position: relative;
+  cursor: wait;
+}
+.loading > * {
+  pointer-events: none;
+  filter: blur(2px);
+  opacity: .5;
+}
+.loading > .loader {
+  filter: blur(0);
+  opacity: 1;
 }
