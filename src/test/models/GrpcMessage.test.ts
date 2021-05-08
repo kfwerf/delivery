@@ -1,6 +1,6 @@
 import GrpCurlResponse from "../../models/GrpCurlResponse";
 import GrpcMessage from "../../models/GrpcMessage";
-import GrpcRegistry from "../../registry/typeregistry";
+import GrpcRegistry from "../../registry/registry";
 
 const message = new GrpcMessage(new GrpCurlResponse('', '',`
     com.delivery.v1.messages.BatchRequest is a message:
@@ -142,8 +142,8 @@ test('example should match via typeRegistry', () => {
     ];
 
     const typeRegistry = new GrpcRegistry();
-    messages.forEach((message) => typeRegistry.register(message));
-    const messageFound = typeRegistry.get(message.getPath());
+    messages.forEach((message) => typeRegistry.registerMessage(message));
+    const messageFound = typeRegistry.getMessage(message.getPath());
     const example = messageFound.getExample(typeRegistry);
 
 

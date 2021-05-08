@@ -3,36 +3,58 @@
 import cmd from 'node-cmd'; // untyped
 import { execPath } from '../binaries';
 import GrpCurlResponse from '../models/grpcurlresponse';
+import { bodyParams, emptyParams, defaultCommand } from "../models/GrpCurlCommand";
+import GrpCurlCommand from "../models/GrpCurlCommand";
 
-function grpCurlExecutor(params = ''): Promise<GrpCurlResponse> {
-  // FIXME: make this command editable
-  const command = `${execPath} -plaintext -max-time 5 ${params}`;
-  return new Promise((resolve) => {
-    try {
-      cmd.get(command, (err: string, data: string, sterr: string) => {
-        const error = sterr || err;
-        console.log(`${command}`, { error, data });
-        resolve(new GrpCurlResponse(command, error, data));
-      });
-    } catch (err) {
-      console.log(`Fatal on: ${command}`, err);
-      resolve(new GrpCurlResponse(command, err as string));
-    }
-  });
+class Grpcurl {
+  private response: Promise<GrpCurlResponse>;
+  private command: GrpCurlCommand;
+
+  private constructor(grpcurlCommand: GrpCurlCommand) {
+    this.command = grpcurlCommand;
+    this.response = this.send(grpcurlCommand.toString());
+  }
+
+  private send(command: string): Promise<GrpCurlResponse> {
+    return new Promise((resolve) => {
+      try {
+        cmd.get(command, (err: string, data: string, sterr: string) => {
+          const error = sterr || err;
+          console.log(`${command}`, { error, data });
+          resolve(new GrpCurlResponse(command, error, data));
+        });
+      } catch (err) {
+        console.log(`Fatal on: ${command}`, err);
+        resolve(new GrpCurlResponse(command, err as string));
+      }
+    })
+  }
+
+  public static from(grpcurlCommand: GrpCurlCommand): Grpcurl {
+    return new Grpcurl(grpcurlCommand);
+  }
+
+  public getResponse(): Promise<GrpCurlResponse> {
+    return this.response;
+  }
+
+  public getCommand(): GrpCurlCommand {
+    return this.command;
+  }
 }
 
-const sendWithBody = (body: string, url: string, method: string) => grpCurlExecutor(`-d '${body}' ${url} ${method}`);
-const sendEmpty = (url: string, method: string) => grpCurlExecutor(`${url} ${method}`);
-
 const grpcurl = {
-  help: (): Promise<GrpCurlResponse> => grpCurlExecutor('-help'),
-  version: (): Promise<GrpCurlResponse> => grpCurlExecutor('-version'),
-  send: (body: string, url: string, method: string): Promise<GrpCurlResponse> => {
+  send: (body: string, url: string, method: string, command: GrpCurlCommand = defaultCommand): Grpcurl => {
     const hasBody = body && body.length > 3;
-    return hasBody ? sendWithBody(body, url, method) : sendEmpty(url, method);
+    if (hasBody) {
+      return Grpcurl.from(command.setParams(bodyParams(body, url, method)));
+    }
+    return Grpcurl.from(command.setParams(emptyParams(url, method)));
   },
-  list: (url: string): Promise<GrpCurlResponse> => grpCurlExecutor(`${url} list`),
-  describe: (url: string, method: string): Promise<GrpCurlResponse> => grpCurlExecutor(`${url} describe ${method}`),
+  list: (url: string, command: GrpCurlCommand = defaultCommand): Grpcurl => Grpcurl.from(command.setParams(`${url} list`)),
+  describe: (url: string, method: string, command: GrpCurlCommand = defaultCommand): Grpcurl => Grpcurl.from(command.setParams(`${url} describe ${method}`)),
+  // Use this
+  command: (command: GrpCurlCommand = defaultCommand): Grpcurl => Grpcurl.from(command),
 };
 
 export default grpcurl;

@@ -5,10 +5,11 @@ import {getRequestsFromServices} from "../../utils/extract";
 import GrpcTypeRegistry from "../../registry/registry";
 import GrpcMessage from "../../models/GrpcMessage";
 import {dedupe} from "../../utils/list";
+import GrpCurlCommand from "../../models/GrpCurlCommand";
 
-async function recursiveGetMessages(url: string, messageTypes: string[], messages: GrpcMessage[] = []): Promise<GrpcMessage[]> {
+async function recursiveGetMessages(command: GrpCurlCommand, url: string, messageTypes: string[], messages: GrpcMessage[] = []): Promise<GrpcMessage[]> {
   const messagesListResponse = await Promise.all(messageTypes.map(
-      (messageType) => grpcurl.describe(url, messageType),
+      (messageType) => grpcurl.describe(url, messageType, command).getResponse(),
   ));
   const messagesList = messagesListResponse.map((response) => new GrpcMessage(response));
   const allMessages = messages.concat(messagesList);
@@ -26,17 +27,17 @@ async function recursiveGetMessages(url: string, messageTypes: string[], message
       .filter((additionalType) => paths.indexOf(additionalType) === -1);
 
   if (newTypes.length) {
-    return recursiveGetMessages(url, newTypes, newMessages);
+    return recursiveGetMessages(command, url, newTypes, newMessages);
   }
 
   return newMessages;
 }
 
-export default async function detect(url: string): Promise<GrpcTypeRegistry> {
+export default async function detect(command: GrpCurlCommand, url: string): Promise<GrpcTypeRegistry> {
   const typeRegistry = new GrpcTypeRegistry();
 
   // Fetch a list of available services
-  const servicesListResponse = await grpcurl.list(url);
+  const servicesListResponse = await grpcurl.list(url, command).getResponse();
   if (servicesListResponse.hasError()) {
     throw new Error(`Failed to get services list ${servicesListResponse.getError()}`);
   }
@@ -44,14 +45,14 @@ export default async function detect(url: string): Promise<GrpcTypeRegistry> {
 
   // Fetch all description for services
   const describedServicesListResponse = await Promise.all(servicesList
-    .map((service) => grpcurl.describe(url, service)));
+    .map((service) => grpcurl.describe(url, service, command).getResponse()));
 
   const describedServicesList = describedServicesListResponse
     .filter((response) => !response.hasError()) // TODO: Do something more than just ignoring
     .map((describedService) => new GrpcService(describedService));
 
   // Fetch all possible messages by running through the list exhaustively
-  const messagesList = await recursiveGetMessages(url, getRequestsFromServices(describedServicesList));
+  const messagesList = await recursiveGetMessages(command, url, getRequestsFromServices(describedServicesList));
 
   // Register services and messages
   messagesList.forEach((message) => typeRegistry.registerMessage(message));

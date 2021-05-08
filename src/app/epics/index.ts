@@ -5,18 +5,24 @@ import {catchError, map, retry, switchMap} from "rxjs/operators";
 import { INTROSPECT, introspectionFailure, introspectionSuccess } from "../actions/introspection";
 import introspection from "../services/introspection";
 import GrpcTypeRegistry from "../../registry/registry";
-import {REQUEST_SEND, sendRequestFailure, sendRequestSuccess} from "../actions/request";
-import send from "../services/send";
+import {
+    REQUEST_SEND,
+    sendRequestFailure,
+    sendRequestSuccess
+} from "../actions/request";
+import { send, command } from "../services/send";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
 import {mergeMap} from "rxjs-compat/operator/mergeMap";
 import {Action} from "rxjs/internal/scheduler/Action";
+import GrpCurlCommand from "../../models/GrpCurlCommand";
 
 const RETRY_ATTEMPTS = 3;
 const introspectionEpic = (action$: any) =>
     action$.ofType(INTROSPECT).pipe(
         switchMap((action) => {
             const url: string = (action as any).url;
-            return introspection(url).pipe(
+            const command: GrpCurlCommand = (action as any).command;
+            return introspection(command, url).pipe(
                     retry(RETRY_ATTEMPTS),
                     map((data) => {
                         const payload: GrpcTypeRegistry = data as GrpcTypeRegistry;
@@ -27,7 +33,7 @@ const introspectionEpic = (action$: any) =>
             },
         ));
 
-const sendEpic = (action$: ActionsObservable<any>) => action$.pipe(
+const sendRequestEpic = (action$: ActionsObservable<any>) => action$.pipe(
     ofType(REQUEST_SEND),
     switchMap((action) => {
         const url: string = action.url;
@@ -45,4 +51,4 @@ const sendEpic = (action$: ActionsObservable<any>) => action$.pipe(
         );
     }));
 
-export const rootEpic = combineEpics(introspectionEpic, sendEpic);
+export const rootEpic = combineEpics(introspectionEpic, sendRequestEpic);

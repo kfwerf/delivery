@@ -7,6 +7,11 @@ export const REQUEST_SEND = 'REQUEST_SEND';
 export const REQUEST_SEND_SUCCESS = 'REQUEST_SEND_SUCCESS';
 export const REQUEST_SEND_FAILURE = 'REQUEST_SEND_FAILURE';
 
+export const REQUEST_UPDATE_COMMAND = 'REQUEST_UPDATE_COMMAND';
+export const REQUEST_SEND_COMMAND = 'REQUEST_COMMAND';
+export const REQUEST_SEND_COMMAND_SUCCESS = 'REQUEST_COMMAND_SUCCESS';
+export const REQUEST_SEND_COMMAND_FAILURE = 'REQUEST_COMMAND_FAILURE';
+
 export const sendRequest = (url: string, method: string, body: string) => ({
     type: REQUEST_SEND,
     url,
