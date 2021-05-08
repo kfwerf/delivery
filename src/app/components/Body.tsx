@@ -25,7 +25,7 @@ export default function Body() {
 
     const isDisabled: boolean = useSelector((state) => {
         // @ts-ignore
-        return state?.request?.url?.length < 1 || state?.request?.method?.length < 1 || !state?.introspection?.isLoading;
+        return state?.request?.url?.length < 1 || state?.request?.method?.length < 1 || state?.introspection?.isLoading;
     });
 
     const rpc = typeRegistry?.getRpc(method);
