@@ -13,6 +13,7 @@ import {addToast} from "../actions/toast";
 export default function Body() {
     const generatedName = `body-${Math.random().toString(36).substr(2, 9)}`;
     const generatedNameInput = `${generatedName}-textarea`;
+    const classes = ['body', generatedName].join(' ');
 
     const isDisabled: boolean = useSelector((state) => {
         // @ts-ignore
@@ -34,7 +35,6 @@ export default function Body() {
     const message = typeRegistry?.getMessage(requestMethod);
     const value = message?.getExample(typeRegistry) || {};
 
-
     const dispatch = useDispatch();
     const onChange = (body: string) => {
         try {
@@ -45,7 +45,7 @@ export default function Body() {
     };
 
     return (
-        <div className={generatedName} id={generatedNameInput}>
+        <div className={classes} id={generatedNameInput}>
             <div className="form-group">
                 <label htmlFor={generatedNameInput}>Body</label>
                 <AceEditor
@@ -60,7 +60,7 @@ export default function Body() {
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: true,
                     }}
-                    height="446px"
+                    height="420px"
                     width="100%"
                     readOnly={isDisabled}
                 />

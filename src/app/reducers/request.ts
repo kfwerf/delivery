@@ -10,6 +10,7 @@ import {
 } from "../actions/request";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
 import GrpCurlCommand from "../../models/GrpCurlCommand";
+import {PROGRESS_STARTED, PROGRESS_UPDATE, ProgressUpdatePayload} from "../actions/progress";
 
 const defaultState = {
     url: '',
@@ -17,6 +18,7 @@ const defaultState = {
     body: '',
     response: new GrpCurlResponse('', '', ''),
     isLoading: false,
+    progressLoading: 0,
 };
 
 export default function request(state = defaultState, action: any) {
@@ -50,6 +52,7 @@ export default function request(state = defaultState, action: any) {
                 method,
                 body,
                 isLoading: true,
+                progressLoading: 0,
             };
         }
         case REQUEST_SEND_SUCCESS: {
@@ -58,6 +61,7 @@ export default function request(state = defaultState, action: any) {
                 ...state,
                 response,
                 isLoading: false,
+                progressLoading: 0,
             };
         }
         case REQUEST_SEND_FAILURE: {
@@ -66,6 +70,15 @@ export default function request(state = defaultState, action: any) {
                 ...state,
                 response,
                 isLoading: false,
+                progressLoading: 0,
+            };
+        }
+        case PROGRESS_UPDATE: {
+            const { value: progressLoading }: ProgressUpdatePayload = action;
+            return {
+                ...state,
+                isLoading: false,
+                progressLoading,
             };
         }
         default:

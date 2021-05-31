@@ -1,6 +1,15 @@
 import {ActionsObservable, combineEpics, ofType} from "redux-observable";
-import {of} from "rxjs";
-import {catchError, finalize, map, retry, switchMap, throttle, throttleTime} from "rxjs/operators";
+import {interval, of} from "rxjs";
+import {
+    catchError, delay,
+    finalize,
+    map,
+    retry,
+    switchMap,
+    takeWhile,
+    throttle,
+    throttleTime
+} from "rxjs/operators";
 
 import {
     INTROSPECT,
@@ -11,7 +20,7 @@ import {
 import introspection from "../services/introspection";
 import GrpcTypeRegistry from "../../registry/registry";
 import {
-    REQUEST_SEND, REQUEST_SEND_FAILURE,
+    REQUEST_SEND, REQUEST_SEND_FAILURE, REQUEST_SEND_SUCCESS,
     sendRequestFailure,
     sendRequestSuccess
 } from "../actions/request";
@@ -20,8 +29,15 @@ import GrpCurlResponse from "../../models/GrpCurlResponse";
 import {mergeMap} from "rxjs-compat/operator/mergeMap";
 import {Action} from "rxjs/internal/scheduler/Action";
 import GrpCurlCommand from "../../models/GrpCurlCommand";
-import {ADD_TOAST, addToast} from "../actions/toast";
+import {TOAST_ADD, addToast, addedToast, ToastPayload} from "../actions/toast";
 import toastManager from "../services/toast";
+import {
+    PROGRESS_START,
+    PROGRESS_STOP,
+    ProgressPayload,
+    startedProgress, startProgress,
+    stoppedProgress, stopProgress, updateProgress
+} from "../actions/progress";
 
 const RETRY_ATTEMPTS = 3;
 const introspectionEpic = (action$: any) =>
@@ -68,17 +84,42 @@ const sendRequestFailEpic = (action$: ActionsObservable<any>) => action$.pipe(
 );
 
 const addToastEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(ADD_TOAST),
+    ofType(TOAST_ADD),
     throttleTime(300),
-    switchMap((action) => {
+    switchMap((action: ToastPayload) => {
         const { title, text, toastType: type } = action;
         toastManager.notify(title, text, type);
         // Return success?
-        return of({
-            type: 'TOAST_YAY'
-        });
+        return of(addedToast(title, text, type));
+    }));
+
+// FIXME: Figure a way to not have to use these top values for the predicate
+let durationMs = 2000;
+const intervalMs = 10;
+const totalTicks = (durationMs / intervalMs);
+const getNextProgress = (index: number = 0) => (index / totalTicks) * 100;
+let canTake = false;
+const startProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
+    ofType(REQUEST_SEND),
+    switchMap((action: ProgressPayload) => {
+        canTake = true;
+        return interval(intervalMs).pipe(
+            takeWhile(() => canTake),
+            map((value, index) => {
+                return updateProgress(getNextProgress(index));
+            })
+        );
+    }));
+
+const stopProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
+    ofType(REQUEST_SEND_SUCCESS, REQUEST_SEND_FAILURE),
+    delay(2000),
+    switchMap((action: ProgressPayload) => {
+        canTake = false;
+        // Return success?
+        return of(updateProgress(0));
     }));
 
 
 
-export const rootEpic = combineEpics(introspectionEpic, sendRequestEpic, sendRequestFailEpic, addToastEpic);
+export const rootEpic = combineEpics(introspectionEpic, sendRequestEpic, sendRequestFailEpic, addToastEpic, startProgressEpic, stopProgressEpic);

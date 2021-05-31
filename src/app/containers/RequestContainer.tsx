@@ -7,6 +7,8 @@ import Send from "../components/Send";
 import Copy from "../components/Copy";
 import Reset from "../components/Reset";
 import Header from "../components/Header";
+import Progress from "../components/Progress";
+import Footer from "../components/Footer";
 
 export default function RequestContainer() {
     return (
@@ -31,15 +33,7 @@ export default function RequestContainer() {
                     </div>
                 </div>
             </div>
-            <footer className="toolbar toolbar-footer">
-                <div className="toolbar-actions request-footer">
-                    <div className="footer-left">
-                        <div className="send"> <Send /> </div>
-                        <div className="reset"> <Reset /> </div>
-                    </div>
-                    <div className="footer-right"></div>
-                </div>
-            </footer>
+            <Footer />
         </section>
     );
 }

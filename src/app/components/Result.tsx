@@ -43,7 +43,7 @@ export default function Result() {
                 readOnly={true}
                 value={value}
                 width="100%"
-                height="650px"
+                height="622px"
                 highlightActiveLine={false}
                 name={generatedNameInput}
                 editorProps={{ $blockScrolling: true }}

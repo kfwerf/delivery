@@ -1,9 +1,9 @@
 @font-face{font-family:photon-entypo;src:url(fonts/photon-entypo.eot);src:url(fonts/photon-entypo.eot?#iefix) format("eot"),url(fonts/photon-entypo.woff) format("woff"),url(fonts/photon-entypo.ttf) format("truetype");font-weight:normal;font-style:normal}
 .body {
-  height: 200px;
+  height: 446px;
 }
 .response {
-  height: 550px;
+  height: 615px;
 }
 .history {
   overflow: scroll;
@@ -94,7 +94,7 @@ input.form-control {
 
 .footer-left, .footer-right {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   align-content: center;
   flex: 1;
 }
