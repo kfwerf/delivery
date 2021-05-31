@@ -6,7 +6,7 @@ import {
     REQUEST_SEND_FAILURE,
     REQUEST_UPDATE_COMMAND,
     REQUEST_SEND_COMMAND_SUCCESS,
-    REQUEST_SEND_COMMAND_FAILURE,
+    REQUEST_SEND_COMMAND_FAILURE, REQUEST_SEND,
 } from "../actions/request";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
 import GrpCurlCommand from "../../models/GrpCurlCommand";
@@ -16,6 +16,7 @@ const defaultState = {
     method: '',
     body: '',
     response: new GrpCurlResponse('', '', ''),
+    isLoading: false,
 };
 
 export default function request(state = defaultState, action: any) {
@@ -41,11 +42,22 @@ export default function request(state = defaultState, action: any) {
                 url,
             };
         }
+        case REQUEST_SEND: {
+            const { url, method, body } = action;
+            return {
+                ...state,
+                url,
+                method,
+                body,
+                isLoading: true,
+            };
+        }
         case REQUEST_SEND_SUCCESS: {
             const response = action.response;
             return {
                 ...state,
                 response,
+                isLoading: false,
             };
         }
         case REQUEST_SEND_FAILURE: {
@@ -53,6 +65,7 @@ export default function request(state = defaultState, action: any) {
             return {
                 ...state,
                 response,
+                isLoading: false,
             };
         }
         default:

@@ -1,5 +1,7 @@
 import GrpcTypeRegistry from "../../registry/registry";
 import {INTROSPECT, INTROSPECT_FAILURE, INTROSPECT_SUCCESS} from "../actions/introspection";
+import GrpCurlCommand from "../../models/GrpCurlCommand";
+import GrpCurlResponse from "../../models/GrpCurlResponse";
 
 export const defaultState = {
     isLoading: false,
@@ -23,10 +25,11 @@ export default function introspection(state = defaultState, action: any) {
                 typeRegistry: action.typeRegistry,
             };
         case INTROSPECT_FAILURE:
+            const response: GrpCurlResponse = (action as any).response as GrpCurlResponse;
             return {
                 ...state,
                 isLoading: false,
-                errorMessage: action.errorMessage,
+                errorMessage: response.getError(),
             };
         default:
             return state;

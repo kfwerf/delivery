@@ -1,4 +1,5 @@
 import GrpcRegistry from "../../registry/registry";
+import GrpCurlResponse from "../../models/GrpCurlResponse";
 
 export const INTROSPECT = 'INTROSPECT';
 export const INTROSPECT_SUCCESS = 'INTROSPECT_SUCCESS';
@@ -15,8 +16,7 @@ export const introspectionSuccess = (url: string, typeRegistry: GrpcRegistry) =>
     typeRegistry,
 });
 
-export const introspectionFailure = (url: string, errorMessage: string) => ({
+export const introspectionFailure = (response: GrpCurlResponse) => ({
     type: INTROSPECT_FAILURE,
-    url,
-    errorMessage,
+    response,
 });

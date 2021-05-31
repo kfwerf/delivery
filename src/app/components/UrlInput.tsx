@@ -1,6 +1,6 @@
 import Input from "./Input/Input";
 import React from "react";
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Option from "./input/Option";
 import {updateUrl} from "../actions/request";
 import {introspection} from "../actions/introspection";
@@ -10,8 +10,13 @@ export default function UrlInput() {
         create: true,
         createFilter: (url: string) => url.length > 3,
         sortField: 'text',
-        placeholder: 'localhost:443',
+        placeholder: 'Input gRPC server, e.g. localhost:5990',
     };
+
+    const isDisabled: boolean = useSelector((state) => {
+        // @ts-ignore
+        return state?.introspection?.isLoading;
+    });
 
     const dispatch = useDispatch();
     const onChange = (url: string) => {
@@ -20,7 +25,7 @@ export default function UrlInput() {
     };
 
     const options = [
-        new Option('localhost:9999', 'localhost:9999', 'localhost:9999')
+        new Option('localhost:5990', 'localhost:5990', 'localhost:5990')
     ];
 
     return (
@@ -31,7 +36,7 @@ export default function UrlInput() {
                 onChange = {onChange}
                 options ={options}
                 optionGroups={[]}
-                disabled={false}
+                disabled={isDisabled}
             />
         </div>
     )

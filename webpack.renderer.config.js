@@ -8,7 +8,7 @@ rules.push({
 
 rules.push({
   test: /\.(woff|woff2|eot|ttf)$/,
-  use: [{ loader: 'url-loader' }],
+  use: [{ loader: 'file-loader' }],
 });
 
 module.exports = {

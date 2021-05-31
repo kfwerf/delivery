@@ -39,7 +39,7 @@ export default async function detect(command: GrpCurlCommand, url: string): Prom
   // Fetch a list of available services
   const servicesListResponse = await grpcurl.list(url, command).getResponse();
   if (servicesListResponse.hasError()) {
-    throw new Error(`Failed to get services list ${servicesListResponse.getError()}`);
+    return Promise.reject(servicesListResponse);
   }
   const servicesList = toServiceList(servicesListResponse);
 

@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "./Button";
+import Button, {ButtonSize, ButtonType} from "./Photon/Button/Button";
 import {useDispatch, useSelector} from "react-redux";
 import {sendRequest} from "../actions/request";
 
@@ -19,10 +19,19 @@ export default function Send() {
         return state?.request?.body;
     });
 
+    const isDisabled: boolean = useSelector((state) => {
+        // @ts-ignore
+        return state?.request?.isLoading || state?.introspection?.isLoading;
+    });
+
     const dispatch = useDispatch();
-    const onClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const onClick = () => {
         dispatch(sendRequest(url, method, body));
     };
 
-    return (<Button label={"Send"} onClick={onClick} disabled={false} />)
+    return (
+        <Button onClick={onClick} disabled={isDisabled} type={ButtonType.PRIMARY} size={ButtonSize.NORMAL} >
+            Send
+        </Button>
+    );
 }

@@ -1,12 +1,17 @@
 import {ActionsObservable, combineEpics, ofType} from "redux-observable";
 import {of} from "rxjs";
-import {catchError, map, retry, switchMap} from "rxjs/operators";
+import {catchError, finalize, map, retry, switchMap, throttle, throttleTime} from "rxjs/operators";
 
-import { INTROSPECT, introspectionFailure, introspectionSuccess } from "../actions/introspection";
+import {
+    INTROSPECT,
+    INTROSPECT_FAILURE,
+    introspectionFailure,
+    introspectionSuccess
+} from "../actions/introspection";
 import introspection from "../services/introspection";
 import GrpcTypeRegistry from "../../registry/registry";
 import {
-    REQUEST_SEND,
+    REQUEST_SEND, REQUEST_SEND_FAILURE,
     sendRequestFailure,
     sendRequestSuccess
 } from "../actions/request";
@@ -15,6 +20,8 @@ import GrpCurlResponse from "../../models/GrpCurlResponse";
 import {mergeMap} from "rxjs-compat/operator/mergeMap";
 import {Action} from "rxjs/internal/scheduler/Action";
 import GrpCurlCommand from "../../models/GrpCurlCommand";
+import {ADD_TOAST, addToast} from "../actions/toast";
+import toastManager from "../services/toast";
 
 const RETRY_ATTEMPTS = 3;
 const introspectionEpic = (action$: any) =>
@@ -28,7 +35,7 @@ const introspectionEpic = (action$: any) =>
                         const payload: GrpcTypeRegistry = data as GrpcTypeRegistry;
                         return introspectionSuccess(url, payload);
                     }),
-                    catchError((errorMessage) => of(introspectionFailure(url, errorMessage))),
+                    catchError((response: GrpCurlResponse) => of(introspectionFailure(response))),
                 )
             },
         ));
@@ -51,4 +58,27 @@ const sendRequestEpic = (action$: ActionsObservable<any>) => action$.pipe(
         );
     }));
 
-export const rootEpic = combineEpics(introspectionEpic, sendRequestEpic);
+const sendRequestFailEpic = (action$: ActionsObservable<any>) => action$.pipe(
+    ofType(INTROSPECT_FAILURE, REQUEST_SEND_FAILURE),
+    switchMap((action) => {
+        const response = action.response as GrpCurlResponse;
+        const errorMessage = response?.getError()?.split('\n')?.join('<br>');
+        return of(addToast('An error has occured', errorMessage, 'error'));
+    })
+);
+
+const addToastEpic = (action$: ActionsObservable<any>) => action$.pipe(
+    ofType(ADD_TOAST),
+    throttleTime(300),
+    switchMap((action) => {
+        const { title, text, toastType: type } = action;
+        toastManager.notify(title, text, type);
+        // Return success?
+        return of({
+            type: 'TOAST_YAY'
+        });
+    }));
+
+
+
+export const rootEpic = combineEpics(introspectionEpic, sendRequestEpic, sendRequestFailEpic, addToastEpic);

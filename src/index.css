@@ -1,3 +1,4 @@
+@font-face{font-family:photon-entypo;src:url(fonts/photon-entypo.eot);src:url(fonts/photon-entypo.eot?#iefix) format("eot"),url(fonts/photon-entypo.woff) format("woff"),url(fonts/photon-entypo.ttf) format("truetype");font-weight:normal;font-style:normal}
 .body {
   height: 200px;
 }
@@ -38,10 +39,10 @@ img[class^="loading-"] {
   overflow-y: hidden;
 }
 .selectors {
-  padding: 20px 20px 0 20px;
+  padding: 10px 10px 0;
 }
 label[for^="body-"] {
-  padding: 0 20px 0 20px;
+  margin: 0 10px 0;
 }
 .loader-relative {
   position: relative;
@@ -76,4 +77,42 @@ label[for^="body-"] {
   width: 0;
   height: 0;
 }
+.settings {
+  margin: 20px;
+}
+label {
+  display: block;
+}
+input.form-control {
+  width: 550px;
+  display: block;
+}
+
+.request-footer {
+  display: flex;
+}
+
+.footer-left, .footer-right {
+  display: flex;
+  align-items: flex-end;
+  align-content: center;
+  flex: 1;
+}
+
+.footer-left {
+  flex-direction: row-reverse;
+}
+
+.reset {
+  margin: 0 10px;
+}
+
+button.disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+#vanillatoasts-container.toasts-top-right {
+  width: 750px;
+  z-index: 5000;
 }

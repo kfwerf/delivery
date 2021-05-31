@@ -20,9 +20,8 @@ export default function MethodInput() {
     });
 
     const isDisabled: boolean = useSelector((state) => {
-        console.log(state, state?.request?.url?.length < 1, state?.introspection?.isLoading);
         // @ts-ignore
-        return state?.request?.url?.length < 1 || state?.introspection?.isLoading;
+        return state?.request?.url?.length < 4 || state?.introspection?.isLoading;
     });
 
     const services = registry.listServices();
@@ -42,8 +41,6 @@ export default function MethodInput() {
     const onChange = (path: string) => {
         dispatch(updateMethod(path));
     };
-
-    console.log(isDisabled);
 
     return (
         <div>

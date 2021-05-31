@@ -8,6 +8,8 @@ export default function introspection(command: GrpCurlCommand, url: string = 'lo
             subscriber.next(registry);
         }, (rejected) => {
             subscriber.error(rejected);
+        }).catch((reason) => {
+            subscriber.error(reason);
         });
     });
 }

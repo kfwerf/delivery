@@ -8,10 +8,16 @@ import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-beautify";
 import "ace-builds/src-noconflict/ext-language_tools";
 import {updateBody} from "../actions/request";
+import {addToast} from "../actions/toast";
 
 export default function Body() {
     const generatedName = `body-${Math.random().toString(36).substr(2, 9)}`;
     const generatedNameInput = `${generatedName}-textarea`;
+
+    const isDisabled: boolean = useSelector((state) => {
+        // @ts-ignore
+        return state?.introspection?.isLoading;
+    });
 
     const method: string = useSelector((state) => {
         // @ts-ignore
@@ -21,11 +27,6 @@ export default function Body() {
     const typeRegistry: GrpcTypeRegistry = useSelector((state) => {
         // @ts-ignore
         return state?.introspection?.typeRegistry;
-    });
-
-    const isDisabled: boolean = useSelector((state) => {
-        // @ts-ignore
-        return state?.request?.url?.length < 1 || state?.request?.method?.length < 1 || state?.introspection?.isLoading;
     });
 
     const rpc = typeRegistry?.getRpc(method);
@@ -39,7 +40,7 @@ export default function Body() {
         try {
             dispatch(updateBody(JSON.parse(JSON.stringify(body))));
         } catch(error) {
-            console.error(error);
+            dispatch(addToast('Body could not be parsed', error, 'error'));
         }
     };
 

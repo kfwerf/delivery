@@ -46,7 +46,6 @@ export default function Input(item : { label: string, selectizeConfig: {}, onCha
             <div className="form-group">
                 <label htmlFor={generatedNameInput}>{label}</label>
                 <select className="selectize" id={generatedNameInput} name={generatedNameInput} />
-                <div className="loader"></div>
             </div>
         </div>
     );
