@@ -1,10 +1,10 @@
-import Input from "./Input/Input";
+import Input from "../Photon/Input/Input";
 import React from "react";
-import {useDispatch, useSelector} from "react-redux";
-import GrpcTypeRegistry from "../../registry/registry";
-import OptionGroup from "./Input/OptionGroup";
-import Option from "./Input/Option";
-import {updateMethod} from "../actions/request";
+import GrpcTypeRegistry from "../../../registry/registry";
+import OptionGroup from "../Photon/Input/OptionGroup";
+import Option from "../Photon/Input/Option";
+import {updateMethod} from "../../actions/request";
+import {useAppDispatch, useAppSelector} from "../../utils/hooks";
 
 export default function MethodInput() {
     const selectizeConfig = {
@@ -14,13 +14,11 @@ export default function MethodInput() {
         placeholder: 'com.delivery.v1.messages.MessageService/getMessages',
     };
 
-    const registry: GrpcTypeRegistry = useSelector((state) => {
-        // @ts-ignore
+    const registry: GrpcTypeRegistry = useAppSelector((state) => {
         return state?.introspection?.typeRegistry || new GrpcTypeRegistry();
     });
 
-    const isDisabled: boolean = useSelector((state) => {
-        // @ts-ignore
+    const isDisabled: boolean = useAppSelector((state) => {
         return state?.request?.url?.length < 4 || state?.introspection?.isLoading;
     });
 
@@ -37,8 +35,8 @@ export default function MethodInput() {
         .filter((service) => service.getRpcList().length)
         .map((service) => new OptionGroup(service.getName(), service.getPath()));
 
-    const dispatch = useDispatch();
-    const onChange = (path: string) => {
+    const dispatch = useAppDispatch();
+    const onBlur = (path: string) => {
         dispatch(updateMethod(path));
     };
 
@@ -47,7 +45,7 @@ export default function MethodInput() {
             <Input
                 label = "Your method"
                 selectizeConfig = {selectizeConfig}
-                onChange = {onChange}
+                onBlur = {onBlur}
                 options ={options}
                 optionGroups ={optionGroups}
                 disabled={isDisabled}

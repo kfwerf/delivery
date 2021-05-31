@@ -1,7 +1,7 @@
 import React from "react";
-import Button, {ButtonSize, ButtonType} from "./Photon/Button/Button";
+import Button, {ButtonSize, ButtonType} from "../Photon/Button/Button";
 import {useDispatch, useSelector} from "react-redux";
-import {sendRequest} from "../actions/request";
+import {sendRequest} from "../../actions/request";
 
 export default function Send() {
     const url: string = useSelector((state) => {

@@ -12,7 +12,7 @@ const toastManager = {
             title,
             text,
             type,
-            timeout: 10000 // hide after 5000ms, // optional parameter
+            timeout: 3000 // hide after 5000ms, // optional parameter
         });
     }
 }

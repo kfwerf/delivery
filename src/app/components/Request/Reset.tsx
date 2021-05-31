@@ -1,7 +1,7 @@
 import React from "react";
-import Button, {ButtonSize, ButtonType} from "./Photon/Button/Button";
+import Button, {ButtonSize, ButtonType} from "../Photon/Button/Button";
 import {useDispatch, useSelector} from "react-redux";
-import {updateBody, updateMethod, updateUrl} from "../actions/request";
+import {updateBody, updateMethod, updateUrl} from "../../actions/request";
 
 export default function Request() {
     const isDisabled: boolean = useSelector((state) => {

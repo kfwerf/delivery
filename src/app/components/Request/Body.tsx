@@ -1,32 +1,29 @@
 import React from "react";
 import AceEditor from "react-ace";
-import {useDispatch, useSelector} from "react-redux";
-import GrpcTypeRegistry from "../../registry/registry";
+import GrpcTypeRegistry from "../../../registry/registry";
 
 import "ace-builds/src-noconflict/mode-json";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-beautify";
 import "ace-builds/src-noconflict/ext-language_tools";
-import {updateBody} from "../actions/request";
-import {addToast} from "../actions/toast";
+import {updateBody} from "../../actions/request";
+import {addToast} from "../../actions/toast";
+import {useAppDispatch, useAppSelector} from "../../utils/hooks";
 
 export default function Body() {
     const generatedName = `body-${Math.random().toString(36).substr(2, 9)}`;
     const generatedNameInput = `${generatedName}-textarea`;
     const classes = ['body', generatedName].join(' ');
 
-    const isDisabled: boolean = useSelector((state) => {
-        // @ts-ignore
+    const isDisabled: boolean = useAppSelector((state) => {
         return state?.introspection?.isLoading;
     });
 
-    const method: string = useSelector((state) => {
-        // @ts-ignore
+    const method: string = useAppSelector((state) => {
         return state?.request?.method;
     });
 
-    const typeRegistry: GrpcTypeRegistry = useSelector((state) => {
-        // @ts-ignore
+    const typeRegistry: GrpcTypeRegistry = useAppSelector((state) => {
         return state?.introspection?.typeRegistry;
     });
 
@@ -35,7 +32,7 @@ export default function Body() {
     const message = typeRegistry?.getMessage(requestMethod);
     const value = message?.getExample(typeRegistry) || {};
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const onChange = (body: string) => {
         try {
             dispatch(updateBody(JSON.parse(JSON.stringify(body))));
@@ -47,11 +44,11 @@ export default function Body() {
     return (
         <div className={classes} id={generatedNameInput}>
             <div className="form-group">
-                <label htmlFor={generatedNameInput}>Body</label>
+                <label htmlFor={generatedNameInput}>Your body</label>
                 <AceEditor
                     mode="json"
                     theme="github"
-                    placeholder="Body"
+                    placeholder="Your body"
                     onChange={onChange}
                     value={JSON.stringify(value, null, 4)}
                     name={generatedNameInput}

@@ -47,15 +47,25 @@ label[for^="body-"] {
 .loader-relative {
   position: relative;
 }
-.loader {
-  background-image: url(loader.svg), none;
-  width: 20px;
-  height: 20px;
+.loading .selectize-control::before {
+  -moz-transition: opacity 0.2s;
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+  content: ' ';
+  z-index: 2;
   position: absolute;
-  bottom: 50%;
-  transform: translateY(50%);
-  left: 10px;
-  margin: 2px;
+  display: block;
+  top: 50%;
+  right: 34px;
+  width: 16px;
+  height: 16px;
+  margin: -10px 0 0 0;
+  background: url(spinner.gif);
+  background-size: 16px 16px;
+  opacity: 0;
+}
+.loading .selectize-control::before {
+  opacity: 0.4;
 }
 .loading {
   position: relative;
@@ -63,8 +73,6 @@ label[for^="body-"] {
 }
 .loading > * {
   pointer-events: none;
-  filter: blur(2px);
-  opacity: .5;
 }
 .loading > .loader {
   filter: blur(0);
@@ -115,4 +123,8 @@ button.disabled {
 #vanillatoasts-container.toasts-top-right {
   width: 750px;
   z-index: 5000;
+}
+
+progress {
+  margin: 0 10px;
 }

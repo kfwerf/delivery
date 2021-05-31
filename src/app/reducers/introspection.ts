@@ -3,13 +3,19 @@ import {INTROSPECT, INTROSPECT_FAILURE, INTROSPECT_SUCCESS} from "../actions/int
 import GrpCurlCommand from "../../models/GrpCurlCommand";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
 
-export const defaultState = {
+export type IntrospectionState = {
+    isLoading?: false,
+    errorMessage?: '',
+    typeRegistry?: GrpcTypeRegistry,
+}
+
+export const defaultState: IntrospectionState = {
     isLoading: false,
     errorMessage: '',
     typeRegistry: new GrpcTypeRegistry(),
 };
 
-export default function introspection(state = defaultState, action: any) {
+export default function introspection(state: IntrospectionState = defaultState, action: any) {
     switch (action.type) {
         case INTROSPECT:
             return {

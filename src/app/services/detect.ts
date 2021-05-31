@@ -6,6 +6,7 @@ import GrpcTypeRegistry from "../../registry/registry";
 import GrpcMessage from "../../models/GrpcMessage";
 import {dedupe} from "../../utils/list";
 import GrpCurlCommand from "../../models/GrpCurlCommand";
+import {Observable} from "rxjs";
 
 async function recursiveGetMessages(command: GrpCurlCommand, url: string, messageTypes: string[], messages: GrpcMessage[] = []): Promise<GrpcMessage[]> {
   const messagesListResponse = await Promise.all(messageTypes.map(
@@ -40,6 +41,7 @@ export default async function detect(command: GrpCurlCommand, url: string): Prom
   const servicesListResponse = await grpcurl.list(url, command).getResponse();
   if (servicesListResponse.hasError()) {
     return Promise.reject(servicesListResponse);
+    //throw new Error(`Failed to get services list ${servicesListResponse.getError()}`);
   }
   const servicesList = toServiceList(servicesListResponse);
 

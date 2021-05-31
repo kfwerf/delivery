@@ -13,7 +13,7 @@ import {
 
 import {
     INTROSPECT,
-    INTROSPECT_FAILURE,
+    INTROSPECT_FAILURE, INTROSPECT_SUCCESS,
     introspectionFailure,
     introspectionSuccess
 } from "../actions/introspection";
@@ -24,24 +24,20 @@ import {
     sendRequestFailure,
     sendRequestSuccess
 } from "../actions/request";
-import { send, command } from "../services/send";
+import { send } from "../services/send";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
-import {mergeMap} from "rxjs-compat/operator/mergeMap";
-import {Action} from "rxjs/internal/scheduler/Action";
+
 import GrpCurlCommand from "../../models/GrpCurlCommand";
 import {TOAST_ADD, addToast, addedToast, ToastPayload} from "../actions/toast";
 import toastManager from "../services/toast";
 import {
-    PROGRESS_START,
-    PROGRESS_STOP,
-    ProgressPayload,
-    startedProgress, startProgress,
-    stoppedProgress, stopProgress, updateProgress
+    ProgressPayload, updateProgress
 } from "../actions/progress";
 
 const RETRY_ATTEMPTS = 3;
 const introspectionEpic = (action$: any) =>
     action$.ofType(INTROSPECT).pipe(
+        throttleTime(300),
         switchMap((action) => {
             const url: string = (action as any).url;
             const command: GrpCurlCommand = (action as any).command;
@@ -94,26 +90,29 @@ const addToastEpic = (action$: ActionsObservable<any>) => action$.pipe(
     }));
 
 // FIXME: Figure a way to not have to use these top values for the predicate
-let durationMs = 2000;
+// FIXME: should probably determine take via payload
+let durationMs = 5000;
 const intervalMs = 10;
 const totalTicks = (durationMs / intervalMs);
 const getNextProgress = (index: number = 0) => (index / totalTicks) * 100;
 let canTake = false;
 const startProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(REQUEST_SEND),
+    ofType(REQUEST_SEND, INTROSPECT),
     switchMap((action: ProgressPayload) => {
         canTake = true;
         return interval(intervalMs).pipe(
             takeWhile(() => canTake),
             map((value, index) => {
+                if (index > totalTicks) {
+                    canTake = false;
+                }
                 return updateProgress(getNextProgress(index));
             })
         );
     }));
 
 const stopProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(REQUEST_SEND_SUCCESS, REQUEST_SEND_FAILURE),
-    delay(2000),
+    ofType(REQUEST_SEND_SUCCESS, REQUEST_SEND_FAILURE, INTROSPECT_SUCCESS, INTROSPECT_FAILURE),
     switchMap((action: ProgressPayload) => {
         canTake = false;
         // Return success?

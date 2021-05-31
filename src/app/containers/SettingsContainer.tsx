@@ -1,7 +1,7 @@
 import React from "react";
 import CommandCopier from "../components/GrpcurlRequest";
 import Button from "../components/Photon/Button/Button";
-import Send from "../components/Send";
+import Send from "../components/Request/Send";
 
 export default function SettingsContainer() {
 

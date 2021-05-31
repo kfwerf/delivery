@@ -9,17 +9,6 @@ export default function Header() {
     return (
         <ToolbarHeader>
             <div className="toolbar-actions">
-                <ButtonGroup>
-                    <Button classes={["active"]}>
-                        <Icon name={IconName.HOME}></Icon>
-                        <span>Home</span>
-                    </Button>
-                    <Button>
-                        <Icon name={IconName.COG}></Icon>
-                        <span>Settings</span>
-                    </Button>
-                </ButtonGroup>
-
                 <div className="copy pull-right"> <Copy /> </div>
             </div>
         </ToolbarHeader>
