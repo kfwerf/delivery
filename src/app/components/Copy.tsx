@@ -1,12 +1,11 @@
 import React from "react";
 import {useSelector} from "react-redux";
 import GrpCurlCommand, {bodyParams} from "../../models/GrpCurlCommand";
-import Button from "./Button";
+import Button, {ButtonSize, ButtonType} from "./Photon/Button/Button";
 
-export default function GrpcurlRequest() {
+export default function Copy() {
 
     const command: GrpCurlCommand = useSelector((state) => {
-        console.log(state)
         // @ts-ignore
         return state?.command?.command;
     });
@@ -36,8 +35,10 @@ export default function GrpcurlRequest() {
 
     return (
         <div className="curl-debug">
-            <textarea className="curl-command" type="text" value={example} readOnly={true}></textarea>
-            <Button label={"Copy command"} disabled={false} onClick={onClick}/>
+            <textarea className="curl-command form-control" value={example} readOnly={true}></textarea>
+            <Button disabled={false} onClick={onClick} type={ButtonType.PRIMARY} size={ButtonSize.SMALL}>
+                Copy gRPCurl command
+            </Button>
         </div>
     )
 }
