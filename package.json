@@ -6,9 +6,9 @@
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
+    "package": "NODE_ENV=PROD electron-forge package",
+    "make": "NODE_ENV=PROD electron-forge make",
+    "publish": "NODE_ENV=PROD electron-forge publish",
     "lint": "eslint --ext .ts .",
     "test": "jest"
   },
@@ -24,7 +24,12 @@
   "license": "MIT",
   "config": {
     "forge": {
-      "packagerConfig": {},
+      "packagerConfig": {
+        "extraResource": [
+          "src/bin/"
+        ],
+        "icon": "src/AppIcon.icns"
+      },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
@@ -40,11 +45,30 @@
         },
         {
           "name": "@electron-forge/maker-deb",
-          "config": {}
+          "config": {
+            "maintainer": "Kenneth van der Werf",
+            "homepage": "https://github.com/kfwerf/delivery"
+          }
         },
         {
           "name": "@electron-forge/maker-rpm",
-          "config": {}
+          "config": {
+            "maintainer": "Kenneth van der Werf",
+            "homepage": "https://github.com/kfwerf/delivery"
+          }
+        }
+      ],
+      "publishers": [
+        {
+          "name": "@electron-forge/publisher-github",
+          "config": {
+            "repository": {
+              "owner": "kfwerf",
+              "name": "Kenneth van der Werf"
+            },
+            "draft": true,
+            "prerelease": true
+          }
         }
       ],
       "plugins": [
@@ -78,6 +102,7 @@
     "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@electron-forge/plugin-webpack": "^6.0.0-beta.54",
+    "@electron-forge/publisher-github": "^6.0.0-beta.54",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "@types/jest": "^26.0.20",
     "@types/jquery": "^3.5.5",

@@ -1,5 +1,8 @@
-import { app, BrowserWindow } from 'electron';
+import {app, BrowserWindow, Menu} from 'electron';
 declare const MAIN_WINDOW_WEBPACK_ENTRY: any;
+
+const IS_PROD = process.env.NODE_ENV === 'production';
+const IS_DEV = process.env.NODE_ENV !== 'production';
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
@@ -11,6 +14,7 @@ const createWindow = (): void => {
   const mainWindow = new BrowserWindow({
     height: 720,
     width: 960,
+    icon: `${__dirname}/AppIcon.icns`,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
@@ -22,7 +26,9 @@ const createWindow = (): void => {
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (IS_DEV) {
+    mainWindow.webContents.openDevTools();
+  }
 };
 
 // This method will be called when Electron has finished
@@ -49,3 +55,15 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
+const template = [
+  {
+    label: 'Application',
+    submenu: [
+      { label: 'About Application', selector: 'orderFrontStandardAboutPanel:' },
+      { type: 'separator' },
+      { label: 'Quit', accelerator: 'Command+Q', click: () => app.quit() },
+    ],
+  }
+];
+
+Menu.setApplicationMenu(Menu.buildFromTemplate(template));

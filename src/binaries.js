@@ -9,7 +9,8 @@ const { getAppPath } = remote.app;
 // FIXME: Figure out how to get filename not null
 const isPackaged = require.main.filename && require.main.filename.indexOf('app.asar') !== -1;
 
-const binariesPath = IS_PROD && isPackaged
+
+const binariesPath = IS_PROD
   ? path.join(path.dirname(getAppPath()), './bin', platform())
   : path.join(path.dirname(getAppPath()), './delivery/src/bin', platform());
 

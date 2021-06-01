@@ -120,5 +120,4 @@ const stopProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
     }));
 
 
-
 export const rootEpic = combineEpics(introspectionEpic, sendRequestEpic, sendRequestFailEpic, addToastEpic, startProgressEpic, stopProgressEpic);
