@@ -3,7 +3,7 @@ import React from "react";
 import GrpcTypeRegistry from "../../../registry/registry";
 import OptionGroup from "../Photon/Input/OptionGroup";
 import Option from "../Photon/Input/Option";
-import {updateMethod} from "../../actions/request";
+import {updateBody, updateMethod} from "../../actions/request";
 import {useAppDispatch, useAppSelector} from "../../utils/hooks";
 
 export default function MethodInput() {
@@ -37,6 +37,7 @@ export default function MethodInput() {
 
     const dispatch = useAppDispatch();
     const onBlur = (path: string) => {
+        dispatch(updateBody(''));
         dispatch(updateMethod(path));
     };
 
@@ -49,6 +50,7 @@ export default function MethodInput() {
                 options ={options}
                 optionGroups ={optionGroups}
                 disabled={isDisabled}
+                clear={true}
     />
     </div>
 )

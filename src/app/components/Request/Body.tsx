@@ -57,7 +57,7 @@ export default function Body() {
                         enableBasicAutocompletion: true,
                         enableLiveAutocompletion: true,
                     }}
-                    height="420px"
+                    height="457px"
                     width="100%"
                     readOnly={isDisabled}
                 />

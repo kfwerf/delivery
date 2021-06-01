@@ -7,5 +7,6 @@ type ProgressProps = {
 export default function Progress(props: ProgressProps) {
     const { amount } = props;
     const value = Math.max(0, Math.min(100, amount));
-    return (<progress max="100" value={value}>value %</progress>);
+    const classes = value > 0 ? 'loading' : '';
+    return (<progress max="100" value={value} className={classes}>value %</progress>);
 }

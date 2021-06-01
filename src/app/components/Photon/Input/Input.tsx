@@ -13,6 +13,7 @@ export type InputProps = {
     optionGroups?: OptionGroup[],
     disabled?: boolean,
     loading?: boolean,
+    clear?: boolean,
 }
 
 export default function Input(item : InputProps) {
@@ -25,6 +26,7 @@ export default function Input(item : InputProps) {
         options = [],
         disabled = false,
         loading = false,
+        clear = false,
     } = item;
 
     const generatedName = `selectize-${Math.random().toString(36).substr(2, 9)}`;
@@ -35,9 +37,16 @@ export default function Input(item : InputProps) {
     useEffect(() => {
         // FIXME: deregister this to avoid selectizen over and over again
         const selectize = (jQuery(`#${generatedNameInput}`) as any).selectize(selectizeConfig)[0].selectize;
+
+        if (clear) {
+            selectize.clear(true);
+            selectize.clearOptions(true);
+        }
+
         selectize.on('change', (value: string) => {
             onChange(value);
         });
+
 
         selectize.on('blur', () => {
             onBlur(selectize.getValue());

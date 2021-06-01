@@ -36,7 +36,7 @@ export default function Copy() {
     return (
         <div className="curl-debug">
             <textarea className="curl-command form-control" value={example} readOnly={true}></textarea>
-            <Button disabled={false} onClick={onClick} type={ButtonType.PRIMARY} size={ButtonSize.SMALL}>
+            <Button disabled={false} onClick={onClick} type={ButtonType.DEFAULT} size={ButtonSize.SMALL}>
                 Copy gRPCurl command
             </Button>
         </div>

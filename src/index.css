@@ -1,9 +1,9 @@
 @font-face{font-family:photon-entypo;src:url(fonts/photon-entypo.eot);src:url(fonts/photon-entypo.eot?#iefix) format("eot"),url(fonts/photon-entypo.woff) format("woff"),url(fonts/photon-entypo.ttf) format("truetype");font-weight:normal;font-style:normal}
 .body {
-  height: 446px;
+  height: 457px;
 }
 .response {
-  height: 615px;
+  height: 659px;
 }
 .history {
   overflow: scroll;
@@ -47,7 +47,7 @@ label[for^="body-"] {
 .loader-relative {
   position: relative;
 }
-.loading .selectize-control::before {
+.loading .selectize-control::before, progress::before {
   -moz-transition: opacity 0.2s;
   -webkit-transition: opacity 0.2s;
   transition: opacity 0.2s;
@@ -59,12 +59,16 @@ label[for^="body-"] {
   right: 34px;
   width: 16px;
   height: 16px;
-  margin: -10px 0 0 0;
+  margin: -11px 0 0 0;
   background: url(spinner.gif);
   background-size: 16px 16px;
   opacity: 0;
 }
-.loading .selectize-control::before {
+progress::before {
+  right: -26px;
+  margin: -8px 0 0 0;
+}
+.loading .selectize-control::before, progress.loading::before {
   opacity: 0.4;
 }
 .loading {
@@ -105,10 +109,11 @@ input.form-control {
   align-items: center;
   align-content: center;
   flex: 1;
+  flex-direction: row-reverse;
 }
 
-.footer-left {
-  flex-direction: row-reverse;
+.send {
+  margin-left: 10px;
 }
 
 .reset {
@@ -126,5 +131,5 @@ button.disabled {
 }
 
 progress {
-  margin: 0 10px;
+  margin: 0 36px 0 10px;
 }

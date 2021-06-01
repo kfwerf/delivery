@@ -3,10 +3,10 @@ import Send from "./Request/Send";
 import Reset from "./Request/Reset";
 import React from "react";
 import {useSelector} from "react-redux";
+import Copy from "./Copy";
 
 export default function Footer() {
     const progressLoading: number = useSelector((state) => {
-        console.log(progressLoading);
         // @ts-ignore
         return state?.request?.progressLoading;
     });
@@ -15,10 +15,10 @@ export default function Footer() {
             <div className="toolbar-actions request-footer">
                 <div className="footer-left">
                     <div className="send"> <Send /> </div>
-                    <Progress amount={progressLoading}></Progress>
+                    <div className="copy"> <Copy /> </div>
                 </div>
                 <div className="footer-right">
-
+                    <Progress amount={progressLoading}></Progress>
                 </div>
             </div>
         </footer>

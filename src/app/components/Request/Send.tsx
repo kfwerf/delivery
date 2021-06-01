@@ -30,7 +30,7 @@ export default function Send() {
     };
 
     return (
-        <Button onClick={onClick} disabled={isDisabled} type={ButtonType.PRIMARY} size={ButtonSize.NORMAL} >
+        <Button onClick={onClick} disabled={isDisabled} type={ButtonType.PRIMARY} size={ButtonSize.SMALL} >
             Send
         </Button>
     );

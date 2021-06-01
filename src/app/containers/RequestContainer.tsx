@@ -13,7 +13,6 @@ import Footer from "../components/Footer";
 export default function RequestContainer() {
     return (
         <section className="window">
-            <Header />
             <div className="window-content">
 
                 <div className="pane-group">

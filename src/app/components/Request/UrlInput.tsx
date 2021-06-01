@@ -1,7 +1,7 @@
 import Input from "../Photon/Input/Input";
 import React from "react";
 import Option from "../Photon/Input/Option";
-import {updateUrl} from "../../actions/request";
+import {updateBody, updateMethod, updateUrl} from "../../actions/request";
 import {introspection} from "../../actions/introspection";
 import {useAppDispatch, useAppSelector} from "../../utils/hooks";
 
@@ -24,6 +24,8 @@ export default function UrlInput() {
     const dispatch = useAppDispatch();
     const onBlur = (url: string) => {
         if (url?.length > 3) {
+            dispatch(updateBody(''));
+            dispatch(updateMethod(''));
             dispatch(updateUrl(url));
             dispatch(introspection(url));
         }
