@@ -1,4 +1,4 @@
-import { stateEvent, getState, setState } from './app';
+import { stateEvent, getState, setState } from './app/App';
 
 const history = [];
 const historyList = document.querySelector('.history');

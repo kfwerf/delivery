@@ -1,0 +1,135 @@
+@font-face{font-family:photon-entypo;src:url(fonts/photon-entypo.eot);src:url(fonts/photon-entypo.eot?#iefix) format("eot"),url(fonts/photon-entypo.woff) format("woff"),url(fonts/photon-entypo.ttf) format("truetype");font-weight:normal;font-style:normal}
+.body {
+  height: 457px;
+}
+.response {
+  height: 659px;
+}
+.history {
+  overflow: scroll;
+}
+.type {
+  background-color: #f5f5f4;
+  padding: 4px;
+  border-radius: 4px;
+  position: absolute;
+  right: 20px;
+  font-size: 12px;
+}
+.form-group, .form-actions {
+  position: relative;
+}
+img[class^="loading-"] {
+  position: absolute;
+  top: 38px;
+  z-index: 1;
+  right: 40px;
+}
+.hidden {
+  opacity: 0;
+  transform: scale(0,0);
+  pointer-events: none;
+}
+.logs-group.hidden {
+  height: 0;
+  overflow: hidden;
+}
+/**/
+.pane.main-pane {
+  overflow-y: hidden;
+}
+.selectors {
+  padding: 10px 10px 0;
+}
+label[for^="body-"] {
+  margin: 0 10px 0;
+}
+.loader-relative {
+  position: relative;
+}
+.loading .selectize-control::before, progress::before {
+  -moz-transition: opacity 0.2s;
+  -webkit-transition: opacity 0.2s;
+  transition: opacity 0.2s;
+  content: ' ';
+  z-index: 2;
+  position: absolute;
+  display: block;
+  top: 50%;
+  right: 34px;
+  width: 16px;
+  height: 16px;
+  margin: -11px 0 0 0;
+  background: url(spinner.gif);
+  background-size: 16px 16px;
+  opacity: 0;
+}
+progress::before {
+  right: -26px;
+  margin: -8px 0 0 0;
+}
+.loading .selectize-control::before, progress.loading::before {
+  opacity: 0.4;
+}
+.loading {
+  position: relative;
+  cursor: wait;
+}
+.loading > * {
+  pointer-events: none;
+}
+.loading > .loader {
+  filter: blur(0);
+  opacity: 1;
+}
+.curl-command {
+  pointer-events: none;
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.settings {
+  margin: 20px;
+}
+label {
+  display: block;
+}
+input.form-control {
+  width: 550px;
+  display: block;
+}
+
+.request-footer {
+  display: flex;
+}
+
+.footer-left, .footer-right {
+  display: flex;
+  align-items: center;
+  align-content: center;
+  flex: 1;
+  flex-direction: row-reverse;
+}
+
+.send {
+  margin-left: 10px;
+}
+
+.reset {
+  margin: 0 10px;
+}
+
+button.disabled {
+  opacity: .5;
+  pointer-events: none;
+}
+
+#vanillatoasts-container.toasts-top-right {
+  width: 750px;
+  z-index: 5000;
+}
+
+progress {
+  margin: 0 36px 0 10px;
+}

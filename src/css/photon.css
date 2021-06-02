@@ -770,13 +770,7 @@ img {
   color: #666666;
 }
 
-@font-face {
-  font-family: "photon-entypo";
-  src: url("../fonts/photon-entypo.eot");
-  src: url("../fonts/photon-entypo.eot?#iefix") format("eot"), url("../fonts/photon-entypo.woff") format("woff"), url("../fonts/photon-entypo.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
+
 .icon:before {
   position: relative;
   display: inline-block;

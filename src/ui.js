@@ -6,9 +6,11 @@ import { js } from 'js-beautify';
 import jQuery from 'jquery';
 import 'selectize';
 
-import grpcurl from './grpcurl';
-import detect, { getLogs } from './autodetect';
-import { codeMirrorConfig, setMethod, methodEvent, stateEvent, getMethod, getState, setState, getId, getUrls, setMethods, setBody, dispatchMethodCacheChanged, logsEvent } from './app';
+import grpcurl from './cli/grpcurl';
+import detect, { getLogs } from './app/services/autodetect';
+import {
+  codeMirrorConfig, setMethod, methodEvent, stateEvent, getMethod, getState, setState, getId, getUrls, setMethods, setBody, dispatchMethodCacheChanged, logsEvent,
+} from './app/App';
 
 // Input
 const root = document;
@@ -16,13 +18,13 @@ const inputFields = {
   autodetect: root.querySelector('button.autodetect'),
   url: jQuery('.url').selectize({
     create: true,
-    createFilter: url => url.length > 3,
+    createFilter: (url) => url.length > 3,
     sortField: 'text',
     placeholder: 'localhost:443',
   })[0].selectize,
   method: jQuery('.method').selectize({
     create: true,
-    createFilter: method => method.length > 3,
+    createFilter: (method) => method.length > 3,
     sortField: 'text',
     placeholder: 'packagename.serviceName/Method',
   })[0].selectize,
@@ -31,19 +33,22 @@ const inputFields = {
     root.querySelector('.body'),
     _.defaults(codeMirrorConfig, {
       mode: 'javascript',
-    })),
+    }),
+  ),
   response: codeMirror.fromTextArea(
     root.querySelector('.response'),
     _.defaults(codeMirrorConfig, {
       mode: 'shell',
       readOnly: true,
-    })),
+    }),
+  ),
   logs: codeMirror.fromTextArea(
     root.querySelector('.logs'),
     _.defaults(codeMirrorConfig, {
       mode: 'shell',
       readOnly: true,
-    })),
+    }),
+  ),
   send: root.querySelector('.send'),
   reset: root.querySelector('.reset'),
   logsBtn: root.querySelector('.btn-logs'),
@@ -67,9 +72,7 @@ function hasJson(body, inverse = true) {
 }
 
 function onAutodetect(url) {
-  return detect(url).then((results) => {
-    return results;
-  }).catch(err => inputFields.response.setValue(JSON.stringify(err) + ''));
+  return detect(url).then((results) => results).catch((err) => inputFields.response.setValue(`${JSON.stringify(err)}`));
 }
 
 function onUrlChange(url) {
@@ -83,7 +86,7 @@ function onUrlChange(url) {
     methodLoader.classList.add('hidden');
     if (results && results.servicesWithExample) {
       results.servicesWithExample.forEach((service) => {
-        const methods = service.methods.map(method => _.defaults({
+        const methods = service.methods.map((method) => _.defaults({
           url,
           service,
         }, method));
@@ -144,11 +147,11 @@ function onSend(e) {
     method: inputFields.method.getValue(),
     body,
   });
-  grpcurl.send({ url, method, body }).then(res => {
-    inputFields.response.setValue(res + '');
+  grpcurl.send({ url, method, body }).then((res) => {
+    inputFields.response.setValue(`${res}`);
   }).catch((error) => {
-    inputFields.response.setValue(error + '');
-  })
+    inputFields.response.setValue(`${error}`);
+  });
 }
 
 function onReset(e) {
@@ -168,13 +171,13 @@ function onMethodCacheUpdated(e) {
   // url
   const activeUrl = state.url || inputFields.url.getValue();
   const filteredToUrl = newMethodCache
-    .filter(method => method.url === activeUrl);
+    .filter((method) => method.url === activeUrl);
 
-    // methods
+  // methods
   filteredToUrl
     .forEach((method) => {
-      const service = method.service;
-      const url = method.url;
+      const { service } = method;
+      const { url } = method;
       if (service) {
         inputFields.method.addOptionGroup(service.path, {
           label: service.name,
@@ -197,7 +200,7 @@ function onMethodCacheUpdated(e) {
   // active method
   const path = state.method || inputFields.method.getValue();
   const activeMethod = filteredToUrl
-    .filter(method => method.path === path)[0] || filteredToUrl[0] || { path: '' };
+    .filter((method) => method.path === path)[0] || filteredToUrl[0] || { path: '' };
   inputFields.method.createItem(activeMethod.path, false);
 
   // body
@@ -212,7 +215,7 @@ function onMethodCacheUpdated(e) {
 }
 
 function onStateChanged(e) {
-  const state = e.detail.state;
+  const { state } = e.detail;
   if (state.id) {
     setBody(state.method, state.url, state.body || inputFields.body.getValue()); // no dispatch
     inputFields.url.setValue(state.url, true);
@@ -226,7 +229,7 @@ function onLogsToggle(e) {
 }
 
 function onLogsChanged(e) {
-  const logs = e.detail.logs;
+  const { logs } = e.detail;
   inputFields.logs.setValue(logs);
 }
 
