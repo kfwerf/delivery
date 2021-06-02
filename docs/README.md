@@ -6,6 +6,14 @@ GRPC GUI client for GRPCurl
 [![CI](https://github.com/kfwerf/delivery/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/kfwerf/delivery/actions/workflows/main.yml)
 [![CodeQL](https://github.com/kfwerf/delivery/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kfwerf/delivery/actions/workflows/codeql-analysis.yml)
 
+### Latest version
+Recently delivery has been revised, using a newer forge with React and Typescript
+
+#### V0.1.0
+[![Latest](https://github.com/kfwerf/delivery/blob/master/screenshot/logo.png?raw=true)](https://github.com/kfwerf/delivery/releases/download/v0.1.0/Delivery-darwin-x64-0.1.0.zip)
+
+[Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.0.2/Delivery-darwin-x64-0.0.2.zip)
+
 ### What is it?
 **TL;DR; GRPCurl wrapper that auto detects methods and types, simplifying your gRPC experience,
 thanks to [GRPCurl](https://github.com/fullstorydev/grpcurl).**
@@ -22,21 +30,12 @@ This way you can easily write your GRPC commands without having to figure out th
 ### Where do i get it?
 There is a version (0.1.0), there might be bugs. If there are please file a ticket.
 
-### Latest version
-Recently delivery has been revised, using a newer forge with React and Typescript
-
-#### V0.1.0
-[Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.1.0/Delivery-darwin-x64-0.1.0.zip)
-
 ### Archived versions
-
 #### V0.0.2
 [Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.0.2/Delivery-darwin-x64-0.0.2.zip)
 
 #### V0.0.1
 [Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.0.1/Delivery-darwin-x64-0.0.1.zip)
-
-
 
 ### Getting Started
 To build from source, first checkout the code
