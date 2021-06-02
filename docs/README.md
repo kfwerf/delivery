@@ -6,6 +6,7 @@ GRPC GUI client for GRPCurl
 
 [![Build Status](https://travis-ci.org/miguelbaldi/delivery.svg?branch=make-linux)](https://travis-ci.org/miguelbaldi/delivery)
 [![CI](https://github.com/kfwerf/delivery/actions/workflows/main.yml/badge.svg?branch=master)](https://github.com/kfwerf/delivery/actions/workflows/main.yml)
+[![CodeQL](https://github.com/kfwerf/delivery/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/kfwerf/delivery/actions/workflows/codeql-analysis.yml)
 
 ## What is it?
 **TL;DR; GRPCurl wrapper that auto detects methods and types, simplifying your gRPC experience,
