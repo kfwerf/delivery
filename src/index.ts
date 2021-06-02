@@ -66,4 +66,5 @@ const template = [
   }
 ];
 
+// @ts-ignore
 Menu.setApplicationMenu(Menu.buildFromTemplate(template));

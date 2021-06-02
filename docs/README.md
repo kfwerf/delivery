@@ -74,6 +74,6 @@ npm install
 ```
 Then generate the native package(s)
 ```sh
-npm run package
+npm run make
 ```
 The output should be at `out/`
