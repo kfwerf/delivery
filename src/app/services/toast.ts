@@ -5,9 +5,13 @@ const className = 'toast-container';
 const toastContainer = document.createElement('section');
 toastContainer.classList.add(className);
 const container = document.body.appendChild(toastContainer);
-
 const toastManager = {
     notify: (title: string, text: string, type: string) => {
+        new Notification(title, {
+            body: text,
+            icon: `${__dirname}/AppIcon.icns`,
+        });
+
         VanillaToasts.create({
             title,
             text,
