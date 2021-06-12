@@ -1,7 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import cmd from 'node-cmd'; // untyped
-import GrpCurlResponse from '../models/grpcurlresponse';
+import GrpCurlResponse from '../models/GrpCurlResponse';
 import { bodyParams, emptyParams, defaultCommand } from "../models/GrpCurlCommand";
 import GrpCurlCommand from "../models/GrpCurlCommand";
 

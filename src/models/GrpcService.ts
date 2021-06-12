@@ -1,4 +1,4 @@
-import GrpCurlResponse from './grpcurlresponse';
+import GrpCurlResponse from './GrpCurlResponse';
 import GrpcRpc from './GrpcRpc';
 import {getName, getServicePath} from '../deserialization/service';
 import { getRpcList } from '../deserialization/rpc';
