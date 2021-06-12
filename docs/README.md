@@ -11,6 +11,7 @@ Recently delivery has been revised, using a newer forge with React and Typescrip
 
 #### V0.1.0
 [![Latest](https://github.com/kfwerf/delivery/blob/master/screenshot/logo.png?raw=true)](https://github.com/kfwerf/delivery/releases/tag/v0.1.0)
+
 [Mac OSX/Linux/Windows (DMG, RPM, DEB, NUPKG, EXE)](https://github.com/kfwerf/delivery/releases/tag/v0.1.0)
 
 #### Older v0.0.2
