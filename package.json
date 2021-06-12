@@ -7,8 +7,8 @@
   "scripts": {
     "start": "electron-forge start",
     "package": "NODE_ENV=PROD electron-forge package",
-    "make": "NODE_ENV=PROD electron-forge make",
-    "publish": "NODE_ENV=PROD electron-forge publish",
+    "make": "set NODE_ENV=PROD&& electron-forge make",
+    "publish": "set NODE_ENV=PROD&& electron-forge publish",
     "lint": "eslint --ext .ts .",
     "test": "jest"
   },
