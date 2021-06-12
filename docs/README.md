@@ -10,7 +10,8 @@ GRPC GUI client for GRPCurl
 Recently delivery has been revised, using a newer forge with React and Typescript. Currently supported platforms are Linux, Windows and Mac OSX, using the new publisher.
 
 #### V0.1.0
-[![Mac OSX/Linux/Windows (DMG, RPM, DEB, NUPKG, EXE) ](https://github.com/kfwerf/delivery/releases/tag/v0.1.0)
+[![Latest](https://github.com/kfwerf/delivery/blob/master/screenshot/logo.png?raw=true)](https://github.com/kfwerf/delivery/releases/tag/v0.1.0)
+[Mac OSX/Linux/Windows (DMG, RPM, DEB, NUPKG, EXE)](https://github.com/kfwerf/delivery/releases/tag/v0.1.0)
 
 #### Older v0.0.2
 [Mac OSX](https://github.com/kfwerf/delivery/releases/download/v0.0.2/Delivery-darwin-x64-0.0.2.zip)
