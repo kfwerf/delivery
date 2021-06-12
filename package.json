@@ -64,7 +64,7 @@
           "config": {
             "repository": {
               "owner": "kfwerf",
-              "name": "Kenneth van der Werf"
+              "name": "delivery"
             },
             "draft": true,
             "prerelease": true
