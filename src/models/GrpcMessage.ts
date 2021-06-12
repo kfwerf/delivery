@@ -1,4 +1,4 @@
-import GrpCurlResponse from './grpcurlresponse';
+import GrpCurlResponse from './GrpCurlResponse';
 
 import GrpcMessageProperty from './GrpcMessageProperty';
 import {

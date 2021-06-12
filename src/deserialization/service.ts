@@ -1,4 +1,4 @@
-import GrpCurlResponse from '../models/grpcurlresponse';
+import GrpCurlResponse from '../models/GrpCurlResponse';
 import { matchSafe } from '../utils/string';
 
 export const toServiceList = (response: GrpCurlResponse): string[] => {
