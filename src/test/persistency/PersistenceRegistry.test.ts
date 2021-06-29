@@ -64,23 +64,31 @@ test('should add new body entry at the bottom', () => {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
         {
             url: 'bar',
             date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
     ];
 
-    const newEntry = PersistenceRegistry.newBodyEntry('faz', '{"request": {"uri":"faz"}}', 'Method/Faz');
+    const newEntry = PersistenceRegistry.newBodyEntry(
+        'faz',
+        'Method/Faz',
+        {"request":{"uri":"faz"}},
+        {"request":{"uri":"faz-update"}}
+    );
     const bodyEntries = PersistenceRegistry.newBodyEntries(newEntry, 4, before);
 
     const expected: BodyEntry[] = [
@@ -88,20 +96,23 @@ test('should add new body entry at the bottom', () => {
             url: 'bar',
             date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
         newEntry,
         {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
     ];
     expect(bodyEntries).toHaveLength(4);
@@ -114,23 +125,31 @@ test('should replace old body entry', () => {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
         {
             url: 'bar',
             date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
     ];
 
-    const newEntry = PersistenceRegistry.newBodyEntry('foo', '{"request": {"uri":"foo-2"}}', 'Method/Foo');
+    const newEntry = PersistenceRegistry.newBodyEntry(
+        'foo',
+        'Method/Foo',
+        {"request":{"uri":"foo"}},
+        {"request":{"uri":"foo-update"}}
+    );
     const bodyEntries = PersistenceRegistry.newBodyEntries(newEntry, 4, before);
 
     const expected: BodyEntry[] = [
@@ -138,18 +157,20 @@ test('should replace old body entry', () => {
             url: 'bar',
             date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
         newEntry,
     ];
-    expect(bodyEntries).toHaveLength(3);
     expect(bodyEntries).toStrictEqual(expected);
+    expect(bodyEntries).toHaveLength(3);
 });
 
 test('should not replace old body entry when method does not match', () => {
@@ -158,39 +179,50 @@ test('should not replace old body entry when method does not match', () => {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
         {
             url: 'bar', date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
     ];
 
-    const newEntry = PersistenceRegistry.newBodyEntry('foo', '{"request": {"uri":"foo-2"}}', 'Method/Foo2');
+    const newEntry = PersistenceRegistry.newBodyEntry(
+        'foo',
+        'Method/Foo2',
+        {"request":{"uri":"foo"}},
+        {"request":{"uri":"foo-update"}}
+    );
     const bodies = PersistenceRegistry.newBodyEntries(newEntry, 4, before);
 
     const expected: BodyEntry[] = [
         {
             url: 'bar', date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514, method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
         {
             url: 'foo',
             date: 1624220730214, method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
         newEntry,
     ];
@@ -204,23 +236,31 @@ test('should not replace old body entry when url does not match', () => {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
         {
             url: 'bar',
             date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
     ];
 
-    const newEntry = PersistenceRegistry.newBodyEntry('foo2', '{"request": {"uri":"foo-2"}}', 'Method/Foo');
+    const newEntry = PersistenceRegistry.newBodyEntry(
+        'foo2',
+        'Method/Foo',
+        {"request":{"uri":"foo"}},
+        {"request":{"uri":"foo-update"}}
+    );
     const bodies = PersistenceRegistry.newBodyEntries(newEntry, 4, before);
 
     const expected: BodyEntry[] = [
@@ -228,19 +268,83 @@ test('should not replace old body entry when url does not match', () => {
             url: 'bar',
             date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
         {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
+        },
+        newEntry,
+    ];
+    expect(bodies).toHaveLength(4);
+    expect(bodies).toStrictEqual(expected);
+});
+
+test('should not replace old body entry when example does not match', () => {
+    const before: BodyEntry[] = [
+        {
+            url: 'foo',
+            date: 1624220730214,
+            method: 'Method/Foo',
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
+        },
+        {
+            url: 'bar',
+            date: 1624220730114,
+            method: 'Method/Bar',
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
+        },
+        {
+            url: 'baz',
+            date: 1624220730514,
+            method: 'Method/Baz',
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
+        },
+    ];
+
+    const newEntry = PersistenceRegistry.newBodyEntry(
+        'foo',
+        'Method/Foo',
+        {"request":{"uri":"foo-si-ba"}},
+        {"request":{"uri":"foo-update"}}
+    );
+    const bodies = PersistenceRegistry.newBodyEntries(newEntry, 4, before);
+
+    const expected: BodyEntry[] = [
+        {
+            url: 'bar',
+            date: 1624220730114,
+            method: 'Method/Bar',
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
+        },
+        {
+            url: 'baz',
+            date: 1624220730514,
+            method: 'Method/Baz',
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
+        },
+        {
+            url: 'foo',
+            date: 1624220730214,
+            method: 'Method/Foo',
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
         newEntry,
     ];
@@ -254,23 +358,31 @@ test('should remove earliest body entry when limit is reached', () => {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
         {
             url: 'bar',
             date: 1624220730114,
             method: 'Method/Bar',
-            original: '{"request": {"uri":"bar"}}'
+            example: '{"request":{"uri":"bar"}}',
+            body: '{"request":{"uri":"bar-update"}}',
         },
         {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
     ];
 
-    const newEntry = PersistenceRegistry.newBodyEntry('faz', '{"request": {"uri":"faz"}}', 'Method/Faz');
+    const newEntry = PersistenceRegistry.newBodyEntry(
+        'faz',
+        'Method/Faz',
+        {"request":{"uri":"faz"}},
+        {"request":{"uri":"faz-update"}}
+    );
     const bodyEntries = PersistenceRegistry.newBodyEntries(newEntry, 3, before);
 
     const expected: BodyEntry[] = [
@@ -278,14 +390,16 @@ test('should remove earliest body entry when limit is reached', () => {
             url: 'baz',
             date: 1624220730514,
             method: 'Method/Baz',
-            original: '{"request": {"uri":"baz"}}'
+            example: '{"request":{"uri":"baz"}}',
+            body: '{"request":{"uri":"baz-update"}}',
         },
         newEntry,
         {
             url: 'foo',
             date: 1624220730214,
             method: 'Method/Foo',
-            original: '{"request": {"uri":"foo"}}'
+            example: '{"request":{"uri":"foo"}}',
+            body: '{"request":{"uri":"foo-update"}}',
         },
     ];
     expect(bodyEntries).toHaveLength(3);

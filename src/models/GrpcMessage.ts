@@ -14,6 +14,8 @@ import {fixType} from "../utils/string";
 import {toScalar, toScalarKey} from "../utils/conversion";
 import GrpcTypeRegistry from "../registry/registry";
 
+export type GrpcMessageRecord = Record<string, unknown>;
+
 export default class GrpcMessage {
     private readonly response: GrpCurlResponse;
 
@@ -84,7 +86,7 @@ export default class GrpcMessage {
         return this.response;
     }
 
-    public getExample(typeRegistry: GrpcTypeRegistry): Record<string, unknown> {
+    public getExample(typeRegistry: GrpcTypeRegistry): GrpcMessageRecord {
         // TODO: Move this possibly somewhere else
         const newExample = this.properties
             .filter((property, idx) => {

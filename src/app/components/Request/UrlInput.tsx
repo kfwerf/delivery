@@ -4,7 +4,7 @@ import Option from "../Photon/Input/Option";
 import {updateBody, updateMethod, updateUrl} from "../../actions/request";
 import {introspection} from "../../actions/introspection";
 import {useAppDispatch, useAppSelector} from "../../utils/hooks";
-import PersistenceRegistry from "../../persistency/PersistenceRegistry";
+import persistenceRegistry, {PersistenceRegistry} from "../../persistency/PersistenceRegistry";
 
 export default function UrlInput() {
     const selectizeConfig = {
@@ -30,11 +30,11 @@ export default function UrlInput() {
             dispatch(updateUrl(url));
             dispatch(introspection(url));
             // FIXME: might need redux for proper flow
-            PersistenceRegistry.setUrl(url);
+            persistenceRegistry.setUrl(PersistenceRegistry.newUrlEntry(url));
         }
     };
 
-    const options = PersistenceRegistry.getUrls()
+    const options = persistenceRegistry.getUrls()
         .map(entry => entry.url)
         .map(url => {
         return new Option(url, url, url);

@@ -1,11 +1,11 @@
-import * as Url from "url";
-import * as url from "url";
+import {GrpcMessageRecord} from "../../models/GrpcMessage";
 
 export type UrlEntry = { url: string, date: number };
 export type BodyEntry = {
     url: string,
     date: number,
-    original: string,
+    example: string,
+    body: string,
     method: string,
 };
 
@@ -44,11 +44,11 @@ export class PersistenceRegistry {
         return { url, date };
     }
 
-    public setUrl(url: string) {
-        PersistenceRegistry.UrlEntriesToLocalStorage(PersistenceRegistry.newUrlEntries(PersistenceRegistry.newUrlEntry(url)));
+    public setUrl(newEntry: UrlEntry) {
+        PersistenceRegistry.UrlEntriesToLocalStorage(PersistenceRegistry.newUrlEntries(newEntry));
     }
 
-    public getUrls() {
+    public getUrls(): UrlEntry[] {
         return PersistenceRegistry.UrlEntriesFromLocalStorage();
     }
 
@@ -64,17 +64,18 @@ export class PersistenceRegistry {
         return PersistenceRegistry.toLocalStorage(LOCAL_BODY_KEY, bodyEntries);
     }
 
-    public static newBodyEntry(url: string, original: string, method: string): BodyEntry {
+    public static newBodyEntry(url: string, method: string, example: GrpcMessageRecord, body: GrpcMessageRecord): BodyEntry {
         const date = new Date().getTime();
-        return { url, date, original, method };
+        return { url, method, date, example: JSON.stringify(example), body: JSON.stringify(body) };
     }
 
     public static newBodyEntries(newEntry: BodyEntry, limit: number = MAX_LIMIT, beforeEntries: BodyEntry[] = PersistenceRegistry.BodyEntriesFromLocalStorage()): BodyEntry[] {
         return beforeEntries
             .filter(entry => {
-                const isUrl = entry.url === newEntry.url;
-                const isMethod = entry.method === newEntry.method;
-                const isSame = isUrl && isMethod;
+                const hasUrl = entry.url === newEntry.url;
+                const hasMethod = entry.method === newEntry.method;
+                const hasExample = entry.example == newEntry.example;
+                const isSame = hasUrl && hasMethod && hasExample;
                 return !isSame;
             })
             .sort((a, b) => b.date - a.date)
@@ -84,12 +85,23 @@ export class PersistenceRegistry {
     }
 
 
-    public setBody(url: string, original: string, method: string) {
-        PersistenceRegistry.BodyEntriesToLocalStorage(PersistenceRegistry.newBodyEntries(PersistenceRegistry.newBodyEntry(url, original, method)));
+    public setBody(newEntry: BodyEntry) {
+        PersistenceRegistry.BodyEntriesToLocalStorage(PersistenceRegistry.newBodyEntries(newEntry));
     }
 
-    public getBodies() {
+    public getBodies(): BodyEntry[] {
         return PersistenceRegistry.BodyEntriesFromLocalStorage();
+    }
+
+    public getBody(url: string, method: string, example: GrpcMessageRecord): BodyEntry {
+        const newEntry = PersistenceRegistry.newBodyEntry(url, method, example, {});
+        const foundEntries = this.getBodies().filter(entry => {
+            const hasUrl = entry.url === newEntry.url;
+            const hasMethod = entry.method === newEntry.method;
+            const hasExample = entry.example == newEntry.example;
+            return hasUrl && hasMethod && hasExample;
+        });
+        return foundEntries[0] || PersistenceRegistry.newBodyEntry(url, method, example, example);
     }
 
     public clearBodies() {
