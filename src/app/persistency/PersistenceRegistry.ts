@@ -52,6 +52,10 @@ export class PersistenceRegistry {
         return PersistenceRegistry.UrlEntriesFromLocalStorage();
     }
 
+    public getUrlsAsStringList(): string[] {
+        return this.getUrls().map(entry => entry.url);
+    }
+
     public clearUrls() {
         PersistenceRegistry.UrlEntriesToLocalStorage([]);
     }

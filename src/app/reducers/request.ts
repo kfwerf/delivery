@@ -6,13 +6,19 @@ import {
     REQUEST_SEND_FAILURE,
     REQUEST_UPDATE_COMMAND,
     REQUEST_SEND_COMMAND_SUCCESS,
-    REQUEST_SEND_COMMAND_FAILURE, REQUEST_SEND,
+    REQUEST_SEND_COMMAND_FAILURE,
+    REQUEST_SEND,
+    UpdateUrlPayload,
+    REQUEST_UPDATE_URLS,
+    UpdateUrlsPayload,
 } from "../actions/request";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
 import GrpCurlCommand from "../../models/GrpCurlCommand";
 import {PROGRESS_STARTED, PROGRESS_UPDATE, ProgressUpdatePayload} from "../actions/progress";
+import persistenceRegistry from "../persistency/PersistenceRegistry";
 
 const defaultState = {
+    urls: persistenceRegistry.getUrlsAsStringList(),
     url: '',
     method: '',
     body: '',
@@ -38,10 +44,19 @@ export default function request(state = defaultState, action: any) {
             };
         }
         case REQUEST_UPDATE_URL: {
-            const url = action.url;
+            const payload: UpdateUrlPayload = action;
+            const url = payload.url;
             return {
                 ...state,
                 url,
+            };
+        }
+        case REQUEST_UPDATE_URLS: {
+            const payload: UpdateUrlsPayload = action;
+            const urls = payload.urls;
+            return {
+                ...state,
+                urls,
             };
         }
         case REQUEST_SEND: {

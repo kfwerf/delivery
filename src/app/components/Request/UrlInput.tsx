@@ -22,23 +22,19 @@ export default function UrlInput() {
         return state?.introspection?.isLoading;
     });
 
+    const urls: string[] = useAppSelector((state) => {
+        console.log(state);
+        return state?.request?.urls;
+    });
+
+
+
     const dispatch = useAppDispatch();
     const onBlur = (url: string) => {
-        if (url?.length > 3) {
-            dispatch(updateBody(''));
-            dispatch(updateMethod(''));
-            dispatch(updateUrl(url));
-            dispatch(introspection(url));
-            // FIXME: might need redux for proper flow
-            persistenceRegistry.setUrl(PersistenceRegistry.newUrlEntry(url));
-        }
+        dispatch(updateUrl(url));
     };
 
-    const options = persistenceRegistry.getUrls()
-        .map(entry => entry.url)
-        .map(url => {
-        return new Option(url, url, url);
-    });
+    const options = urls.map(url => new Option(url, url, url));
 
     return (
         <div>

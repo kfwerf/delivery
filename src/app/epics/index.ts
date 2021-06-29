@@ -1,7 +1,7 @@
 import {ActionsObservable, combineEpics, ofType} from "redux-observable";
 import {interval, of} from "rxjs";
 import {
-    catchError, delay,
+    catchError, delay, filter,
     finalize,
     map,
     retry,
@@ -13,16 +13,19 @@ import {
 
 import {
     INTROSPECT,
-    INTROSPECT_FAILURE, INTROSPECT_SUCCESS,
-    introspectionFailure,
+    INTROSPECT_FAILURE,
+    INTROSPECT_SUCCESS,
+    introspection,
+    introspectionFailure, IntrospectionPayload,
     introspectionSuccess
 } from "../actions/introspection";
-import introspection from "../services/introspection";
+import introspectionService from "../services/introspection";
 import GrpcTypeRegistry from "../../registry/registry";
 import {
-    REQUEST_SEND, REQUEST_SEND_FAILURE, REQUEST_SEND_SUCCESS,
-    sendRequestFailure,
-    sendRequestSuccess
+    REQUEST_SEND, REQUEST_SEND_FAILURE, REQUEST_SEND_SUCCESS, REQUEST_UPDATE_URL,
+    sendRequestFailure, SendRequestPayload,
+    sendRequestSuccess, updateBody,
+    UpdateUrlPayload, updateUrls
 } from "../actions/request";
 import { send } from "../services/send";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
@@ -33,15 +36,38 @@ import toastManager from "../services/toast";
 import {
     ProgressPayload, updateProgress
 } from "../actions/progress";
+import persistenceRegistry, {PersistenceRegistry} from "../persistency/PersistenceRegistry";
+import { defaultCommand } from "../../models/GrpCurlCommand";
+
+const MIN_URL_LENGTH = 3;
+const filterMinLengthUrl = (action$: ActionsObservable<any>) =>
+    action$.ofType(REQUEST_UPDATE_URL).pipe(
+        filter((action: UpdateUrlPayload) => action?.url?.length > MIN_URL_LENGTH),
+        map((action: UpdateUrlPayload)=> action.url));
+
+const updateUrlIntrospectionEpic = (action$: ActionsObservable<any>) =>
+    filterMinLengthUrl(action$).pipe(switchMap((url) => {
+        return of(introspection(defaultCommand, url));
+    }));
+
+const updateUrlPersistenceEpic = (action$: ActionsObservable<any>) =>
+    filterMinLengthUrl(action$).pipe(
+        switchMap((url) => {
+            // TODO: Maybe this needs to happen elsewhere?
+            persistenceRegistry.setUrl(PersistenceRegistry.newUrlEntry(url));
+            const urls = persistenceRegistry.getUrlsAsStringList();
+            return of(updateUrls(urls));
+        })
+    );
+// TODO: Add updates for body/method via this way
 
 const RETRY_ATTEMPTS = 3;
-const introspectionEpic = (action$: any) =>
+const introspectionEpic = (action$: ActionsObservable<any>) =>
     action$.ofType(INTROSPECT).pipe(
         throttleTime(300),
-        switchMap((action) => {
-            const url: string = (action as any).url;
-            const command: GrpCurlCommand = (action as any).command;
-            return introspection(command, url).pipe(
+        switchMap((action: IntrospectionPayload) => {
+            const { url, command } = action;
+            return introspectionService(command, url).pipe(
                     retry(RETRY_ATTEMPTS),
                     map((data) => {
                         const payload: GrpcTypeRegistry = data as GrpcTypeRegistry;
@@ -52,23 +78,16 @@ const introspectionEpic = (action$: any) =>
             },
         ));
 
-const sendRequestEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(REQUEST_SEND),
-    switchMap((action) => {
-        const url: string = action.url;
-        const method: string = action.method;
-        const body: string = action.body;
-        return send(url, method, body).pipe(
-            retry(RETRY_ATTEMPTS),
-            map(data => {
-                const response: GrpCurlResponse = data as GrpCurlResponse;
-                return sendRequestSuccess(response);
-            }),
-            catchError((error) => {
-                return of(sendRequestFailure(error));
-            })
-        );
-    }));
+const sendRequestEpic = (action$: ActionsObservable<any>) =>
+    action$.ofType(REQUEST_SEND).pipe(
+        switchMap((action: SendRequestPayload) => {
+            const { url, method, body } = action;
+            return send(url, method, body).pipe(
+                retry(RETRY_ATTEMPTS),
+                map((response: GrpCurlResponse) => sendRequestSuccess(response)),
+                catchError((error: GrpCurlResponse) => of(sendRequestFailure(error)))
+            );
+        }));
 
 const sendRequestFailEpic = (action$: ActionsObservable<any>) => action$.pipe(
     ofType(INTROSPECT_FAILURE, REQUEST_SEND_FAILURE),
@@ -120,4 +139,13 @@ const stopProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
     }));
 
 
-export const rootEpic = combineEpics(introspectionEpic, sendRequestEpic, sendRequestFailEpic, addToastEpic, startProgressEpic, stopProgressEpic);
+export const rootEpic = combineEpics(
+    updateUrlIntrospectionEpic,
+    updateUrlPersistenceEpic,
+    introspectionEpic,
+    sendRequestEpic,
+    sendRequestFailEpic,
+    addToastEpic,
+    startProgressEpic,
+    stopProgressEpic
+);
