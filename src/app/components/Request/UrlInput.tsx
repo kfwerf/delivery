@@ -1,10 +1,12 @@
 import Input from "../Photon/Input/Input";
 import React from "react";
 import Option from "../Photon/Input/Option";
-import {updateBody, updateMethod, updateUrl} from "../../actions/request";
-import {introspection} from "../../actions/introspection";
-import {useAppDispatch, useAppSelector} from "../../utils/hooks";
-import persistenceRegistry, {PersistenceRegistry} from "../../persistency/PersistenceRegistry";
+import {updateUrl} from "../../actions/request";
+import {
+    useAppDispatch,
+    useIntrospectionState,
+    useRequestState
+} from "../../utils/hooks";
 
 export default function UrlInput() {
     const selectizeConfig = {
@@ -14,20 +16,9 @@ export default function UrlInput() {
         placeholder: 'Input gRPC server, e.g. localhost:5990',
     };
 
-    const isDisabled: boolean = useAppSelector((state) => {
-        return state?.introspection?.isLoading;
-    });
-
-    const isLoading: boolean = useAppSelector((state) => {
-        return state?.introspection?.isLoading;
-    });
-
-    const urls: string[] = useAppSelector((state) => {
-        console.log(state);
-        return state?.request?.urls;
-    });
-
-
+    const isDisabled: boolean = useIntrospectionState((state) => state?.isLoading);
+    const isLoading: boolean = useIntrospectionState((state) => state?.isLoading);
+    const urls: string[] = useRequestState((state) => state?.urls);
 
     const dispatch = useAppDispatch();
     const onBlur = (url: string) => {

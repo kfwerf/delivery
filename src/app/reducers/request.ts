@@ -17,7 +17,17 @@ import GrpCurlCommand from "../../models/GrpCurlCommand";
 import {PROGRESS_STARTED, PROGRESS_UPDATE, ProgressUpdatePayload} from "../actions/progress";
 import persistenceRegistry from "../persistency/PersistenceRegistry";
 
-const defaultState = {
+export type RequestState = {
+    urls: string[],
+    url: string,
+    method: string,
+    body: string,
+    response: GrpCurlResponse,
+    isLoading: boolean,
+    progressLoading: number,
+};
+
+const defaultState: RequestState = {
     urls: persistenceRegistry.getUrlsAsStringList(),
     url: '',
     method: '',
