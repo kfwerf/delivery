@@ -52,19 +52,3 @@ app.on('activate', () => {
     createWindow();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.
-const template = [
-  {
-    label: 'Application',
-    submenu: [
-      { label: 'About Application', selector: 'orderFrontStandardAboutPanel:' },
-      { type: 'separator' },
-      { label: 'Quit', accelerator: 'Command+Q', click: () => app.quit() },
-    ],
-  }
-];
-
-// @ts-ignore
-Menu.setApplicationMenu(Menu.buildFromTemplate(template));

@@ -9,6 +9,7 @@ import "ace-builds/src-noconflict/ext-language_tools";
 import {updateBody} from "../../actions/request";
 import {addToast} from "../../actions/toast";
 import {useAppDispatch, useAppSelector} from "../../utils/hooks";
+import persistenceRegistry, {PersistenceRegistry} from "../../persistency/PersistenceRegistry";
 
 export default function Body() {
     const generatedName = `body-${Math.random().toString(36).substr(2, 9)}`;
@@ -17,6 +18,10 @@ export default function Body() {
 
     const isDisabled: boolean = useAppSelector((state) => {
         return state?.introspection?.isLoading;
+    });
+
+    const url: string = useAppSelector((state) => {
+        return state?.request?.url;
     });
 
     const method: string = useAppSelector((state) => {
@@ -30,16 +35,20 @@ export default function Body() {
     const rpc = typeRegistry?.getRpc(method);
     const requestMethod = rpc?.getRequest();
     const message = typeRegistry?.getMessage(requestMethod);
-    const value = message?.getExample(typeRegistry) || {};
+    const example = message?.getExample(typeRegistry) || {};
+    const bodyEntry = persistenceRegistry.getBody(url, method, example);
 
     const dispatch = useAppDispatch();
     const onChange = (body: string) => {
         try {
+            persistenceRegistry.setBody(PersistenceRegistry.newBodyEntry(url, method, example, JSON.parse(body)));
             dispatch(updateBody(JSON.parse(JSON.stringify(body))));
         } catch(error) {
             dispatch(addToast('Body could not be parsed', error, 'error'));
         }
     };
+
+    const value = JSON.stringify(JSON.parse(bodyEntry.body), null, 4);
 
     return (
         <div className={classes} id={generatedNameInput}>
@@ -50,7 +59,7 @@ export default function Body() {
                     theme="github"
                     placeholder="Your body"
                     onChange={onChange}
-                    value={JSON.stringify(value, null, 4)}
+                    value={value}
                     name={generatedNameInput}
                     editorProps={{ $blockScrolling: true }}
                     setOptions={{
