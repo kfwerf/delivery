@@ -2,7 +2,6 @@ import {ActionsObservable, combineEpics, ofType} from "redux-observable";
 import {interval, of} from "rxjs";
 import {
     catchError, delay, filter,
-    finalize,
     map, mergeMap,
     retry,
     switchMap,
@@ -88,24 +87,24 @@ const sendRequestEpic = (action$: ActionsObservable<any>) =>
             );
         }));
 
-const sendRequestFailEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(INTROSPECT_FAILURE, REQUEST_SEND_FAILURE),
-    switchMap((action) => {
-        const response = action.response as GrpCurlResponse;
-        const errorMessage = response?.getError()?.split('\n')?.join('<br>');
-        return of(addToast('An error has occured', errorMessage, 'error'));
-    })
-);
+const sendRequestFailEpic = (action$: ActionsObservable<any>) =>
+    action$.ofType(INTROSPECT_FAILURE, REQUEST_SEND_FAILURE).pipe(
+        switchMap((action) => {
+            const response = action.response as GrpCurlResponse;
+            const errorMessage = response?.getError()?.split('\n')?.join('<br>');
+            return of(addToast('An error has occured', errorMessage, 'error'));
+        })
+    );
 
-const addToastEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(TOAST_ADD),
-    throttleTime(300),
-    switchMap((action: ToastPayload) => {
-        const { title, text, toastType: type } = action;
-        toastManager.notify(title, text, type);
-        // Return success?
-        return of(addedToast(title, text, type));
-    }));
+const addToastEpic = (action$: ActionsObservable<any>) =>
+    action$.ofType(TOAST_ADD).pipe(
+        throttleTime(300),
+        switchMap((action: ToastPayload) => {
+            const { title, text, toastType: type } = action;
+            toastManager.notify(title, text, type);
+            // Return success?
+            return of(addedToast(title, text, type));
+        }));
 
 // FIXME: Figure a way to not have to use these top values for the predicate
 // FIXME: should probably determine take via payload
@@ -114,28 +113,24 @@ const intervalMs = 10;
 const totalTicks = (durationMs / intervalMs);
 const getNextProgress = (index: number = 0) => (index / totalTicks) * 100;
 let canTake = false;
-const startProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(REQUEST_SEND, INTROSPECT),
-    switchMap((action: ProgressPayload) => {
-        canTake = true;
-        return interval(intervalMs).pipe(
-            takeWhile(() => canTake),
-            map((value, index) => {
-                if (index > totalTicks) {
-                    canTake = false;
-                }
-                return updateProgress(getNextProgress(index));
-            })
-        );
-    }));
+const startProgressEpic = (action$: ActionsObservable<any>) =>
+    action$.ofType(REQUEST_SEND, INTROSPECT).pipe(
+        switchMap((_: ProgressPayload) => {
+            canTake = true;
+            return interval(intervalMs).pipe(
+                takeWhile(() => canTake),
+                map((value, index) => {
+                    if (index > totalTicks) {
+                        canTake = false;
+                    }
+                    return updateProgress(getNextProgress(index));
+                })
+            );
+        }));
 
-const stopProgressEpic = (action$: ActionsObservable<any>) => action$.pipe(
-    ofType(REQUEST_SEND_SUCCESS, REQUEST_SEND_FAILURE, INTROSPECT_SUCCESS, INTROSPECT_FAILURE),
-    switchMap((action: ProgressPayload) => {
-        canTake = false;
-        // Return success?
-        return of(updateProgress(0));
-    }));
+const stopProgressEpic = (action$: ActionsObservable<any>) =>
+    action$.ofType(REQUEST_SEND_SUCCESS, REQUEST_SEND_FAILURE, INTROSPECT_SUCCESS, INTROSPECT_FAILURE).pipe(
+        switchMap((_: ProgressPayload) => of(updateProgress(0))));
 
 
 export const rootEpic = combineEpics(
