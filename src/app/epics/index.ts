@@ -3,10 +3,10 @@ import {interval, of} from "rxjs";
 import {
     catchError, delay, filter,
     finalize,
-    map,
+    map, mergeMap,
     retry,
     switchMap,
-    takeWhile,
+    takeWhile, tap,
     throttle,
     throttleTime
 } from "rxjs/operators";
@@ -24,7 +24,7 @@ import GrpcTypeRegistry from "../../registry/registry";
 import {
     REQUEST_SEND, REQUEST_SEND_FAILURE, REQUEST_SEND_SUCCESS, REQUEST_UPDATE_URL,
     sendRequestFailure, SendRequestPayload,
-    sendRequestSuccess, updateBody,
+    sendRequestSuccess, updateBody, updateMethod,
     UpdateUrlPayload, updateUrls
 } from "../actions/request";
 import { send } from "../services/send";
@@ -46,20 +46,19 @@ const filterMinLengthUrl = (action$: ActionsObservable<any>) =>
         map((action: UpdateUrlPayload)=> action.url));
 
 const updateUrlIntrospectionEpic = (action$: ActionsObservable<any>) =>
-    filterMinLengthUrl(action$).pipe(switchMap((url) => {
-        return of(introspection(defaultCommand, url));
-    }));
+    filterMinLengthUrl(action$).pipe(
+        mergeMap((url) => [
+            introspection(defaultCommand, url),
+            updateMethod(''),
+            updateBody(''),
+        ]),
+    );
 
 const updateUrlPersistenceEpic = (action$: ActionsObservable<any>) =>
     filterMinLengthUrl(action$).pipe(
-        switchMap((url) => {
-            // TODO: Maybe this needs to happen elsewhere?
-            persistenceRegistry.setUrl(PersistenceRegistry.newUrlEntry(url));
-            const urls = persistenceRegistry.getUrlsAsStringList();
-            return of(updateUrls(urls));
-        })
+        tap(url => persistenceRegistry.setUrl(PersistenceRegistry.newUrlEntry(url))),
+        switchMap(() => of(updateUrls(persistenceRegistry.getUrlsAsStringList()))),
     );
-// TODO: Add updates for body/method via this way
 
 const RETRY_ATTEMPTS = 3;
 const introspectionEpic = (action$: ActionsObservable<any>) =>
