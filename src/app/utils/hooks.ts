@@ -8,6 +8,6 @@ import {RequestState} from "../reducers/request";
 export const useAppDispatch = () => useDispatch<AppDispatch>();
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
 export const useIntrospectionState: TypedUseSelectorHook<IntrospectionState> = (cb) =>
-    useAppSelector((state) => cb(state?.introspection));
+    useAppSelector((state) => cb(state?.introspection as IntrospectionState));
 export const useRequestState: TypedUseSelectorHook<RequestState> = (cb) =>
-    useAppSelector((state) => cb(state?.request));
+    useAppSelector((state) => cb(state?.request as RequestState));

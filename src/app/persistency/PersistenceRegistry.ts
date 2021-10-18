@@ -68,9 +68,15 @@ export class PersistenceRegistry {
         return PersistenceRegistry.toLocalStorage(LOCAL_BODY_KEY, bodyEntries);
     }
 
+    private static getJSONStringified(entry: GrpcMessageRecord) {
+        return entry ? JSON.stringify(entry) : null;
+    }
+
     public static newBodyEntry(url: string, method: string, example: GrpcMessageRecord, body: GrpcMessageRecord): BodyEntry {
         const date = new Date().getTime();
-        return { url, method, date, example: JSON.stringify(example), body: JSON.stringify(body) };
+        const newBody = PersistenceRegistry.getJSONStringified(body);
+        const newExample = PersistenceRegistry.getJSONStringified(example);
+        return { url, method, date, example: newExample, body: newBody };
     }
 
     public static newBodyEntries(newEntry: BodyEntry, limit: number = MAX_LIMIT, beforeEntries: BodyEntry[] = PersistenceRegistry.BodyEntriesFromLocalStorage()): BodyEntry[] {
@@ -105,7 +111,7 @@ export class PersistenceRegistry {
             const hasExample = entry.example == newEntry.example;
             return hasUrl && hasMethod && hasExample;
         });
-        return foundEntries[0] || PersistenceRegistry.newBodyEntry(url, method, example, example);
+        return foundEntries[0] || PersistenceRegistry.newBodyEntry(url, method, example, null);
     }
 
     public clearBodies() {
