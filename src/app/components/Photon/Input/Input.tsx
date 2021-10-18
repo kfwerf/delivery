@@ -9,6 +9,7 @@ export type InputProps = {
     selectizeConfig?: {},
     onChange?: (value: string) => void,
     onBlur?: (value: string) => void,
+    value?: string,
     options?: Option[],
     optionGroups?: OptionGroup[],
     disabled?: boolean,
@@ -22,6 +23,7 @@ export default function Input(item : InputProps) {
         selectizeConfig = {},
         onChange = () => {},
         onBlur = () => {},
+        value = '',
         optionGroups = [],
         options = [],
         disabled = false,
@@ -61,6 +63,10 @@ export default function Input(item : InputProps) {
         });
 
         selectize.refreshOptions(false);
+
+        if (value?.length > 0) {
+            selectize.setValue(value, true);
+        }
 
         if(disabled) {
             selectize.disable();
