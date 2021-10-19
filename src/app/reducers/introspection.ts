@@ -35,7 +35,7 @@ export default function introspection(state: IntrospectionState = defaultState, 
             return {
                 ...state,
                 isLoading: false,
-                errorMessage: response.getError(),
+                errorMessage: response?.getError(),
             };
         default:
             return state;

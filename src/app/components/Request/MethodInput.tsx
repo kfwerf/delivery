@@ -3,8 +3,13 @@ import React from "react";
 import GrpcTypeRegistry from "../../../registry/registry";
 import OptionGroup from "../Photon/Input/OptionGroup";
 import Option from "../Photon/Input/Option";
-import {updateBody, updateMethod} from "../../actions/request";
-import {useAppDispatch, useAppSelector} from "../../utils/hooks";
+import {updateMethod} from "../../actions/request";
+import {
+    useAppDispatch,
+    useAppSelector,
+    useIntrospectionState,
+    useRequestState
+} from "../../utils/hooks";
 
 export default function MethodInput() {
     const selectizeConfig = {
@@ -14,13 +19,14 @@ export default function MethodInput() {
         placeholder: 'com.delivery.v1.messages.MessageService/getMessages',
     };
 
-    const registry: GrpcTypeRegistry = useAppSelector((state) => {
-        return state?.introspection?.typeRegistry || new GrpcTypeRegistry();
-    });
+    const registry: GrpcTypeRegistry = useIntrospectionState(
+        (state) => state?.typeRegistry || new GrpcTypeRegistry());
 
-    const isDisabled: boolean = useAppSelector((state) => {
-        return state?.request?.url?.length < 4 || state?.introspection?.isLoading;
-    });
+    const isDisabled: boolean = useAppSelector(
+        (state) => state?.request?.url?.length < 4 || state?.introspection?.isLoading);
+
+    const value: string = useRequestState(
+        (state) => state?.method);
 
     const services = registry.listServices();
 
@@ -37,7 +43,6 @@ export default function MethodInput() {
 
     const dispatch = useAppDispatch();
     const onBlur = (path: string) => {
-        dispatch(updateBody(''));
         dispatch(updateMethod(path));
     };
 
@@ -47,6 +52,7 @@ export default function MethodInput() {
                 label = "Your method"
                 selectizeConfig = {selectizeConfig}
                 onBlur = {onBlur}
+                value={value}
                 options ={options}
                 optionGroups ={optionGroups}
                 disabled={isDisabled}

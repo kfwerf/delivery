@@ -1,10 +1,12 @@
 import Input from "../Photon/Input/Input";
 import React from "react";
 import Option from "../Photon/Input/Option";
-import {updateBody, updateMethod, updateUrl} from "../../actions/request";
-import {introspection} from "../../actions/introspection";
-import {useAppDispatch, useAppSelector} from "../../utils/hooks";
-import PersistenceRegistry from "../../persistency/PersistenceRegistry";
+import {updateUrl} from "../../actions/request";
+import {
+    useAppDispatch,
+    useIntrospectionState,
+    useRequestState
+} from "../../utils/hooks";
 
 export default function UrlInput() {
     const selectizeConfig = {
@@ -14,31 +16,16 @@ export default function UrlInput() {
         placeholder: 'Input gRPC server, e.g. localhost:5990',
     };
 
-    const isDisabled: boolean = useAppSelector((state) => {
-        return state?.introspection?.isLoading;
-    });
-
-    const isLoading: boolean = useAppSelector((state) => {
-        return state?.introspection?.isLoading;
-    });
+    const isDisabled: boolean = useIntrospectionState((state) => state?.isLoading);
+    const isLoading: boolean = useIntrospectionState((state) => state?.isLoading);
+    const urls: string[] = useRequestState((state) => state?.urls);
 
     const dispatch = useAppDispatch();
     const onBlur = (url: string) => {
-        if (url?.length > 3) {
-            dispatch(updateBody(''));
-            dispatch(updateMethod(''));
-            dispatch(updateUrl(url));
-            dispatch(introspection(url));
-            // FIXME: might need redux for proper flow
-            PersistenceRegistry.setUrl(url);
-        }
+        dispatch(updateUrl(url));
     };
 
-    const options = PersistenceRegistry.getUrls()
-        .map(entry => entry.url)
-        .map(url => {
-        return new Option(url, url, url);
-    });
+    const options = urls.map(url => new Option(url, url, url));
 
     return (
         <div>

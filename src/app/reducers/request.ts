@@ -4,18 +4,36 @@ import {
     REQUEST_UPDATE_URL,
     REQUEST_SEND_SUCCESS,
     REQUEST_SEND_FAILURE,
-    REQUEST_UPDATE_COMMAND,
-    REQUEST_SEND_COMMAND_SUCCESS,
-    REQUEST_SEND_COMMAND_FAILURE, REQUEST_SEND,
+    REQUEST_SEND,
+    UpdateUrlPayload,
+    REQUEST_UPDATE_URLS,
+    UpdateUrlsPayload,
+    REQUEST_UPDATE_EXAMPLE,
+    UpdateExamplePayload,
+    UpdateBodyPayload,
+    UpdateMethodPayload, SendRequestPayload,
 } from "../actions/request";
 import GrpCurlResponse from "../../models/GrpCurlResponse";
-import GrpCurlCommand from "../../models/GrpCurlCommand";
-import {PROGRESS_STARTED, PROGRESS_UPDATE, ProgressUpdatePayload} from "../actions/progress";
+import {PROGRESS_UPDATE, ProgressUpdatePayload} from "../actions/progress";
+import persistenceRegistry from "../persistency/PersistenceRegistry";
 
-const defaultState = {
+export type RequestState = {
+    urls: string[],
+    url: string,
+    method: string,
+    body: string,
+    example: string,
+    response: GrpCurlResponse,
+    isLoading: boolean,
+    progressLoading: number,
+};
+
+const defaultState: RequestState = {
+    urls: persistenceRegistry.getUrlsAsStringList(),
     url: '',
     method: '',
     body: '',
+    example: '',
     response: new GrpCurlResponse('', '', ''),
     isLoading: false,
     progressLoading: 0,
@@ -24,28 +42,47 @@ const defaultState = {
 export default function request(state = defaultState, action: any) {
     switch (action.type) {
         case REQUEST_UPDATE_BODY: {
-            const body = action.body;
+            const payload: UpdateBodyPayload = action;
+            const body = payload.body;
             return {
                 ...state,
                 body,
             };
         }
+        case REQUEST_UPDATE_EXAMPLE: {
+            const payload: UpdateExamplePayload = action;
+            const example = payload.example;
+            return {
+                ...state,
+                example,
+            };
+        }
         case REQUEST_UPDATE_METHOD: {
-            const method = action.method;
+            const payload: UpdateMethodPayload = action;
+            const method = payload.method;
             return {
                 ...state,
                 method,
             };
         }
         case REQUEST_UPDATE_URL: {
-            const url = action.url;
+            const payload: UpdateUrlPayload = action;
+            const url = payload.url;
             return {
                 ...state,
                 url,
             };
         }
+        case REQUEST_UPDATE_URLS: {
+            const payload: UpdateUrlsPayload = action;
+            const urls = payload.urls;
+            return {
+                ...state,
+                urls,
+            };
+        }
         case REQUEST_SEND: {
-            const { url, method, body } = action;
+            const { url, method, body }: SendRequestPayload = action;
             return {
                 ...state,
                 url,
