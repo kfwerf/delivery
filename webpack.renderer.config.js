@@ -1,5 +1,6 @@
 const rules = require('./webpack.rules');
 const plugins = require('./webpack.plugins');
+const resolve = require('./webpack.resolve');
 
 rules.push({
   test: /\.css$/,
@@ -17,11 +18,13 @@ rules.push({
 });
 
 module.exports = {
+  //target: 'node',
   module: {
     rules,
   },
   plugins: plugins,
   resolve: {
-    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css']
+    extensions: ['.js', '.ts', '.jsx', '.tsx', '.css'],
+    ...resolve,
   },
 };

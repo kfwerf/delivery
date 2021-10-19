@@ -1,58 +1,55 @@
-import {execPath} from "../binaries";
+import { execPath } from '../binaries';
 
 export default class GrpCurlCommand {
-    private _template: string = '{execPath} -plaintext -max-time 5 {params}';
-    private _params: string = '';
-    private _execPath: string = '/grpcurl';
+  private _template = '{execPath} -plaintext -max-time 5 {params}';
 
-    private constructor(template: string = '{execPath} -plaintext -max-time 5 {params}',
-                        params: string = '',
-                        execPath: string = '/grpcurl') {
-        this._template = template;
-        this._params = params;
-        this._execPath = execPath;
-        return this;
-    }
+  private _params = '';
 
-    public static fromTemplate(template: string = '{execPath} -plaintext -max-time 5 {params}'): GrpCurlCommand {
-        return new GrpCurlCommand(template);
-    }
+  private _execPath = '/grpcurl';
 
-    public setExecPath(execPath: string = '/grpcurl'): GrpCurlCommand {
-        return new GrpCurlCommand(this.getTemplate(), this.getParams(), execPath);
-    }
+  private constructor(template = '{execPath} -plaintext -max-time 5 {params}', params = '', execPath = '/grpcurl') {
+    this._template = template;
+    this._params = params;
+    this._execPath = execPath;
+    return this;
+  }
 
-    public setTemplate(template: string = '{execPath} -plaintext -max-time 5 {params}'): GrpCurlCommand {
-        return new GrpCurlCommand(template, this.getParams(), this.getExecPath());
-    }
+  public static fromTemplate(template = '{execPath} -plaintext -max-time 5 {params}'): GrpCurlCommand {
+    return new GrpCurlCommand(template);
+  }
 
-    public setParams(params: string = ''): GrpCurlCommand {
-        return new GrpCurlCommand(this.getTemplate(), params, this.getExecPath());
-    }
+  public setExecPath(execPath = '/grpcurl'): GrpCurlCommand {
+    return new GrpCurlCommand(this.getTemplate(), this.getParams(), execPath);
+  }
 
-    public getExecPath(): string {
-        return this._execPath;
-    }
+  public setTemplate(template = '{execPath} -plaintext -max-time 5 {params}'): GrpCurlCommand {
+    return new GrpCurlCommand(template, this.getParams(), this.getExecPath());
+  }
 
-    public getParams(): string {
-        return this._params;
-    }
+  public setParams(params = ''): GrpCurlCommand {
+    return new GrpCurlCommand(this.getTemplate(), params, this.getExecPath());
+  }
 
-    public getTemplate(): string {
-        return this._template;
-    }
+  public getExecPath(): string {
+    return this._execPath;
+  }
 
-    public toString(): string {
-        return this._template
-            .replace(/{execPath}/gi, this._execPath)
-            .replace(/{params}/gi, this._params);
-    }
+  public getParams(): string {
+    return this._params;
+  }
+
+  public getTemplate(): string {
+    return this._template;
+  }
+
+  public toString(): string {
+    return this._template.replace(/{execPath}/gi, this._execPath).replace(/{params}/gi, this._params);
+  }
 }
 
+export const bodyParams = (body: string, url: string, method: string): string => `-d '${body}' ${url} ${method}`;
+export const emptyParams = (url: string, method: string): string => `${url} ${method}`;
 
-export const bodyParams = (body: string, url: string, method: string) => `-d '${body}' ${url} ${method}`;
-export const emptyParams = (url: string, method: string) => `${url} ${method}`;
-
-export const defaultCommand = GrpCurlCommand
-    .fromTemplate('{execPath} -plaintext -max-time 5 {params}')
-    .setExecPath(execPath);
+export const defaultCommand = GrpCurlCommand.fromTemplate('{execPath} -plaintext -max-time 5 {params}').setExecPath(
+  execPath,
+);

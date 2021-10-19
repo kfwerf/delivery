@@ -1,15 +1,10 @@
-import React from "react";
+import React from 'react';
 
 export type ToolbarHeaderProps = {
-    children?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
-export default function ToolbarHeader(toolbarHeaderProps: ToolbarHeaderProps) {
-    const { children } = toolbarHeaderProps;
-    return (
-        <header className="toolbar toolbar-header">
-            { children }
-        </header>
-    )
-
+export default function ToolbarHeader(toolbarHeaderProps: ToolbarHeaderProps): JSX.Element {
+  const { children } = toolbarHeaderProps;
+  return <header className="toolbar toolbar-header">{children}</header>;
 }
