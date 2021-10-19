@@ -9,7 +9,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --fix",
+    "lint": "eslint --ext '*/**/*.{js,ts,tsx}' ./src --fix",
     "test": "jest"
   },
   "keywords": [
