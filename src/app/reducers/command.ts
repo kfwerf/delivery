@@ -1,22 +1,24 @@
-import {
-    REQUEST_UPDATE_COMMAND,
-} from "../actions/request";
-import GrpCurlCommand, {defaultCommand} from "../../models/GrpCurlCommand";
+import GrpCurlCommand, { defaultCommand } from '../../models/GrpCurlCommand';
+import { CommandTypes, REQUEST_UPDATE_COMMAND, UpdateCommandPayload } from '../actions/command';
 
-const defaultState = {
-    command: defaultCommand,
+export type CommandState = {
+  command: GrpCurlCommand;
 };
 
-export default function request(state = defaultState, action: any) {
-    switch (action.type) {
-        case REQUEST_UPDATE_COMMAND: {
-            const command: GrpCurlCommand = action.command;
-            return {
-                ...state,
-                command,
-            };
-        }
-        default:
-            return state;
+const defaultState: CommandState = {
+  command: defaultCommand,
+};
+
+export default function request(state = defaultState, action: CommandTypes): CommandState {
+  switch (action.type) {
+    case REQUEST_UPDATE_COMMAND: {
+      const { command } = action as UpdateCommandPayload;
+      return {
+        ...state,
+        command,
+      };
     }
+    default:
+      return state;
+  }
 }

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 import '../index.css';
 import '../css/selectize.css';
@@ -6,12 +6,12 @@ import '../css/selectize.default.css';
 import '../css/photon.css';
 import 'vanillatoasts/vanillatoasts.css';
 
-import RequestContainer from "./containers/RequestContainer";
+import RequestContainer from './containers/RequestContainer';
 
-export default function App() {
-    return (
-        <div className="app">
-            <RequestContainer />
-        </div>
-    );
+export default function App(): JSX.Element {
+  return (
+    <div className="app">
+      <RequestContainer />
+    </div>
+  );
 }

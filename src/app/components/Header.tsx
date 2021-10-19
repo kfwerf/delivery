@@ -1,16 +1,16 @@
-import Copy from "./Copy";
-import React from "react";
-import ButtonGroup from "./Photon/Button/ButtonGroup";
-import Button from "./Photon/Button/Button";
-import ToolbarHeader from "./Photon/Toolbar/ToolbarHeader";
-import Icon, {IconName} from "./Photon/Icon";
+import Copy from './Copy';
+import React from 'react';
+import ToolbarHeader from './Photon/Toolbar/ToolbarHeader';
 
-export default function Header() {
-    return (
-        <ToolbarHeader>
-            <div className="toolbar-actions">
-                <div className="copy pull-right"> <Copy /> </div>
-            </div>
-        </ToolbarHeader>
-    );
+export default function Header(): JSX.Element {
+  return (
+    <ToolbarHeader>
+      <div className="toolbar-actions">
+        <div className="copy pull-right">
+          {' '}
+          <Copy />{' '}
+        </div>
+      </div>
+    </ToolbarHeader>
+  );
 }

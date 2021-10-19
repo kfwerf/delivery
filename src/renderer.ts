@@ -26,10 +26,10 @@
  * ```
  */
 
-//import detect from './autodetect';
-//console.log(detect);
-//const registry = detect('localhost:9999', false);
-
-console.log('👋 This message is being logged by "renderer.js", included via webpack');
+// import detect from './autodetect';
+// console.log(detect);
+// const registry = detect('localhost:9999', false);
 
 import './bootstrap';
+
+console.log('👋 This message is being logged by "renderer.js", included via webpack');

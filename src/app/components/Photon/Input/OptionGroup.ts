@@ -1,21 +1,28 @@
+export type OptionGroupObject = {
+  label: string;
+  value: string;
+};
+
 export default class OptionGroup {
-    private readonly label: string;
-    private readonly value: string;
+  private readonly label: string;
 
-    constructor(label: string, value: string) {
-        this.label = label;
-        this.value = value;
-    }
+  private readonly value: string;
 
-    getLabel(): string {
-        return this.label;
-    }
+  constructor(label: string, value: string) {
+    this.label = label;
+    this.value = value;
+  }
 
-    getValue(): string {
-        return this.value;
-    }
+  getLabel(): string {
+    return this.label;
+  }
 
-    toObject() {
-        return { label: this.label, value: this.value };
-    }
+  getValue(): string {
+    return this.value;
+  }
+
+  toObject(): OptionGroupObject {
+    const { label, value } = this;
+    return { label, value };
+  }
 }

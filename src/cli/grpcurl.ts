@@ -2,11 +2,11 @@
 // @ts-ignore
 import cmd from 'node-cmd'; // untyped
 import GrpCurlResponse from '../models/GrpCurlResponse';
-import { bodyParams, emptyParams, defaultCommand } from "../models/GrpCurlCommand";
-import GrpCurlCommand from "../models/GrpCurlCommand";
+import GrpCurlCommand, { bodyParams, emptyParams, defaultCommand } from '../models/GrpCurlCommand';
 
 class Grpcurl {
   private response: Promise<GrpCurlResponse>;
+
   private command: GrpCurlCommand;
 
   private constructor(grpcurlCommand: GrpCurlCommand) {
@@ -26,7 +26,7 @@ class Grpcurl {
         console.log(`Fatal on: ${command}`, err);
         resolve(new GrpCurlResponse(command, err as string));
       }
-    })
+    });
   }
 
   public static from(grpcurlCommand: GrpCurlCommand): Grpcurl {
@@ -50,8 +50,10 @@ const grpcurl = {
     }
     return Grpcurl.from(command.setParams(emptyParams(url, method)));
   },
-  list: (url: string, command: GrpCurlCommand = defaultCommand): Grpcurl => Grpcurl.from(command.setParams(`${url} list`)),
-  describe: (url: string, method: string, command: GrpCurlCommand = defaultCommand): Grpcurl => Grpcurl.from(command.setParams(`${url} describe ${method}`)),
+  list: (url: string, command: GrpCurlCommand = defaultCommand): Grpcurl =>
+    Grpcurl.from(command.setParams(`${url} list`)),
+  describe: (url: string, method: string, command: GrpCurlCommand = defaultCommand): Grpcurl =>
+    Grpcurl.from(command.setParams(`${url} describe ${method}`)),
   // Use this
   command: (command: GrpCurlCommand = defaultCommand): Grpcurl => Grpcurl.from(command),
 };

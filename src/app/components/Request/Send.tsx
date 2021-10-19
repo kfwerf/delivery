@@ -1,37 +1,34 @@
-import React from "react";
-import Button, {ButtonSize, ButtonType} from "../Photon/Button/Button";
-import {useDispatch, useSelector} from "react-redux";
-import {sendRequest} from "../../actions/request";
+import React from 'react';
+import Button, { ButtonSize, ButtonType } from '../Photon/Button/Button';
+import { useDispatch } from 'react-redux';
+import { sendRequest } from '../../actions/request';
+import { useAppSelector } from '../../utils/hooks';
 
-export default function Send() {
-    const url: string = useSelector((state) => {
-        // @ts-ignore
-        return state?.request?.url;
-    });
+export default function Send(): JSX.Element {
+  const url: string = useAppSelector((state) => {
+    return state?.request?.url;
+  });
 
-    const method: string = useSelector((state) => {
-        // @ts-ignore
-        return state?.request?.method;
-    });
+  const method: string = useAppSelector((state) => {
+    return state?.request?.method;
+  });
 
-    const body: string = useSelector((state) => {
-        // @ts-ignore
-        return state?.request?.body;
-    });
+  const body: string = useAppSelector((state) => {
+    return state?.request?.body;
+  });
 
-    const isDisabled: boolean = useSelector((state) => {
-        // @ts-ignore
-        return state?.request?.isLoading || state?.introspection?.isLoading;
-    });
+  const isDisabled: boolean = useAppSelector((state) => {
+    return state?.request?.isLoading || state?.introspection?.isLoading;
+  });
 
-    const dispatch = useDispatch();
-    const onClick = () => {
-        dispatch(sendRequest(url, method, body));
-    };
+  const dispatch = useDispatch();
+  const onClick = () => {
+    dispatch(sendRequest(url, method, body));
+  };
 
-    return (
-        <Button onClick={onClick} disabled={isDisabled} type={ButtonType.PRIMARY} size={ButtonSize.SMALL} >
-            Send
-        </Button>
-    );
+  return (
+    <Button onClick={onClick} disabled={isDisabled} type={ButtonType.PRIMARY} size={ButtonSize.SMALL}>
+      Send
+    </Button>
+  );
 }
