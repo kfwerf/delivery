@@ -5,8 +5,10 @@ import { remote } from 'electron';
 const IS_PROD = process.env.NODE_ENV === 'production';
 const { getAppPath } = remote.app;
 
-const binariesPath = IS_PROD
-  ? path.join(path.dirname(getAppPath()), './bin', platform())
-  : path.join(path.dirname(getAppPath()), './delivery/src/bin', platform());
+const root = IS_PROD ? path.dirname(getAppPath()) : path.join(path.dirname(getAppPath()), 'delivery/src');
 
-export const execPath = path.resolve(path.join(binariesPath, './grpcurl'));
+const grpcCurlPath = path.join(root, 'bin', platform(), 'grpcurl');
+
+export const execPath = path.resolve(grpcCurlPath);
+
+export const basePath = path.resolve(root);
