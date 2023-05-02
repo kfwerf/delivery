@@ -143,10 +143,10 @@ const introspectionEpic = (action$: ActionsObservable<IntrospectionPayload>) =>
       const { url, command } = action;
       return introspectionService(command, url).pipe(
         retry(RETRY_ATTEMPTS),
-        map((data) => {
+        switchMap((data) => {
           const payload: GrpcTypeRegistry = data as GrpcTypeRegistry;
           console.debug('introspection', url, payload);
-          return introspectionSuccess(url, payload);
+          return of(introspectionSuccess(url, payload));
         }),
         catchError((response: GrpCurlResponse) => of(introspectionFailure(response))),
       );
@@ -167,6 +167,7 @@ const introspectionSuccessEpic = (action$: ActionsObservable<IntrospectionSucces
 
 const sendRequestEpic = (action$: ActionsObservable<SendRequestPayload>) =>
   action$.ofType(REQUEST_SEND).pipe(
+    throttleTime(300),
     switchMap((action) => {
       const { url, method, body } = action;
       return send(url, method, body).pipe(
@@ -225,10 +226,14 @@ const stopProgressEpic = (
   action$: ActionsObservable<
     SendRequestSuccessPayload | SendRequestFailurePayload | IntrospectionSuccessPayload | IntrospectionFailurePayload
   >,
-) =>
-  action$
-    .ofType(REQUEST_SEND_SUCCESS, REQUEST_SEND_FAILURE, INTROSPECT_SUCCESS, INTROSPECT_FAILURE)
-    .pipe(switchMap(() => of(updateProgress(0))));
+) => {
+  return action$.ofType(REQUEST_SEND_SUCCESS, REQUEST_SEND_FAILURE, INTROSPECT_SUCCESS, INTROSPECT_FAILURE).pipe(
+    switchMap(() => {
+      canTake = false;
+      return of(updateProgress(0));
+    }),
+  );
+};
 
 export const rootEpic = combineEpics(
   updateUrlIntrospectionEpic,
