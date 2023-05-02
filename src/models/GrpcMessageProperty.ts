@@ -47,4 +47,8 @@ export default class GrpcMessageProperty {
   public getOneOfKey(): string {
     return this.oneOfKey;
   }
+
+  public hasOneOfKey(): boolean {
+    return !!this.getOneOfKey()?.length;
+  }
 }

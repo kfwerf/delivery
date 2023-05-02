@@ -1,9 +1,9 @@
 @font-face{font-family:photon-entypo;src:url(fonts/photon-entypo.eot);src:url(fonts/photon-entypo.eot?#iefix) format("eot"),url(fonts/photon-entypo.woff) format("woff"),url(fonts/photon-entypo.ttf) format("truetype");font-weight:normal;font-style:normal}
 .body {
-  height: 457px;
+  height: calc(100vh - 210px);
 }
 .response {
-  height: 659px;
+  height: calc(100vh - 35px);
 }
 .history {
   overflow: scroll;
@@ -132,4 +132,26 @@ button.disabled {
 
 progress {
   margin: 0 36px 0 10px;
+}
+
+.valid-indicator {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 1;
+  border-radius: 4px;
+  color: #fff;
+  padding: 3px 8px;
+  background: #6eb4f7;
+}
+
+.valid-indicator.valid {
+  background: #5bd46d;
+}
+
+.valid-indicator.invalid {
+  background: #fd918d;
+}
+.valid-indicator .explanation {
+  margin: 0 10px;
 }

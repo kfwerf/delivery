@@ -7,6 +7,7 @@ import '../css/photon.css';
 import 'vanillatoasts/vanillatoasts.css';
 
 import RequestContainer from './containers/RequestContainer';
+import SettingsContainer from './containers/SettingsContainer';
 
 export default function App(): JSX.Element {
   return (

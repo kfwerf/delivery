@@ -3,6 +3,8 @@ import Button, { ButtonSize, ButtonType } from '../Photon/Button/Button';
 import { useDispatch } from 'react-redux';
 import { sendRequest } from '../../actions/request';
 import { useAppSelector } from '../../utils/hooks';
+import { validateJSON } from '../../utils/validators';
+import { addToast } from '../../actions/toast';
 
 export default function Send(): JSX.Element {
   const url: string = useAppSelector((state) => {
@@ -23,6 +25,12 @@ export default function Send(): JSX.Element {
 
   const dispatch = useDispatch();
   const onClick = () => {
+    const isInvalidBody = !validateJSON(body);
+    if (isInvalidBody) {
+      console.warn('Not sending out send, body is invalid, toasting instead');
+      dispatch(addToast('Invalid body', 'The current body is not valid JSON', 'error'));
+      return;
+    }
     dispatch(sendRequest(url, method, body));
   };
 

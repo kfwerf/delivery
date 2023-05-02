@@ -59,4 +59,9 @@ export const getMessagePropertyObjectIndexes = (lines: string[]): { end: number;
   throw new Error(`braces somehow did not align ${lines}`);
 };
 
-export const getOneOfValue = (line: string): string => line.split(/(oneof )(.+)( {)/gm).slice(2, -2)[0];
+export const getOneOfValue = (line: string): string => {
+  try {
+    return line.split(/(oneof )(.+)( {)/gm).slice(2, -2)[0];
+  } catch (ignore) {}
+  return '';
+};

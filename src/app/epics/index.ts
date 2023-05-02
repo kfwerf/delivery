@@ -59,6 +59,7 @@ import persistenceRegistry, { PersistenceRegistry } from '../persistency/Persist
 import { IntrospectionState } from '../reducers/introspection';
 import { RequestState } from '../reducers/request';
 import { RootStateOrAny } from 'react-redux';
+import { validateJSON } from '../utils/validators';
 
 const MIN_URL_LENGTH = 3;
 const filterMinLengthUrl = (action$: ActionsObservable<UpdateUrlPayload>) =>
@@ -77,7 +78,7 @@ const updateBodyPersistenceEpic = (
 ) =>
   action$.ofType(REQUEST_UPDATE_BODY).pipe(
     withLatestFrom(state$),
-    filter(([action]) => action.body && action.body.length > 0),
+    filter(([action]) => action.body && action.body.length > 0 && validateJSON(action?.body)),
     tap(([action, state]) => {
       const requestState: RequestState = state?.request;
       const { url, method } = requestState;
@@ -134,7 +135,7 @@ const updateBodyAfterExampleChangeEpic = (
     switchMap((body = '') => of(updateBody(body))),
   );
 
-const RETRY_ATTEMPTS = 3;
+const RETRY_ATTEMPTS = 1;
 const introspectionEpic = (action$: ActionsObservable<IntrospectionPayload>) =>
   action$.ofType(INTROSPECT).pipe(
     throttleTime(300),
@@ -144,6 +145,7 @@ const introspectionEpic = (action$: ActionsObservable<IntrospectionPayload>) =>
         retry(RETRY_ATTEMPTS),
         map((data) => {
           const payload: GrpcTypeRegistry = data as GrpcTypeRegistry;
+          console.debug('introspection', url, payload);
           return introspectionSuccess(url, payload);
         }),
         catchError((response: GrpCurlResponse) => of(introspectionFailure(response))),
@@ -159,7 +161,7 @@ const introspectionSuccessEpic = (action$: ActionsObservable<IntrospectionSucces
       const firstRpc = firstService?.getRpcList()[0];
       return firstRpc?.getPath();
     }),
-    filter((path) => path.length > 0),
+    filter((path) => path?.length > 0),
     switchMap((path) => of(updateMethod(path))),
   );
 
@@ -178,7 +180,7 @@ const sendRequestEpic = (action$: ActionsObservable<SendRequestPayload>) =>
 const sendRequestFailEpic = (action$: ActionsObservable<IntrospectionFailurePayload | SendRequestFailurePayload>) =>
   action$.ofType(INTROSPECT_FAILURE, REQUEST_SEND_FAILURE).pipe(
     switchMap((action) => {
-      const response = action.response;
+      const response = action?.response;
       const errorMessage = response?.getError()?.split('\n')?.join('<br>');
       return of(addToast('An error has occured', errorMessage, 'error'));
     }),
@@ -188,6 +190,7 @@ const addToastEpic = (action$: ActionsObservable<ToastPayload>) =>
   action$.ofType(TOAST_ADD).pipe(
     throttleTime(300),
     switchMap((action) => {
+      console.log(action);
       const { title, text, toastType: type } = action;
       toastManager.notify(title, text, type);
       // Return success?

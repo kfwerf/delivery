@@ -1,3 +1,4 @@
+import installExtension, { REDUX_DEVTOOLS } from 'electron-devtools-installer';
 import { app, BrowserWindow } from 'electron';
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
@@ -53,4 +54,10 @@ app.on('activate', () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
+});
+
+app.whenReady().then(() => {
+  installExtension(REDUX_DEVTOOLS)
+    .then((name: string) => console.log(`Added Extension:  ${name}`))
+    .catch((err: string) => console.log('An error occurred: ', err));
 });
