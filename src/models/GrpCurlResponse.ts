@@ -14,7 +14,7 @@ export default class GrpCurlResponse {
   }
 
   getError(): string {
-    return this.error;
+    return this?.error;
   }
 
   getData(): string {
@@ -22,7 +22,7 @@ export default class GrpCurlResponse {
   }
 
   hasError(): boolean {
-    return this.error?.length > 0;
+    return this?.error?.length > 0;
   }
 
   public getPathFromRequest(): string {

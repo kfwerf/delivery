@@ -37,7 +37,7 @@ export default function Result(): JSX.Element {
         readOnly={true}
         value={value}
         width="100%"
-        height="659px"
+        height="calc(100vh - 35px)"
         highlightActiveLine={false}
         name={generatedNameInput}
         editorProps={{ $blockScrolling: true }}

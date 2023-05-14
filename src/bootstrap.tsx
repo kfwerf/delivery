@@ -8,11 +8,15 @@ import App from './app/App';
 import { rootReducer } from './app/reducers';
 import { rootEpic } from './app/epics';
 
-const composeEnhancer = compose; //window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
-
+const composeEnhancers =
+  typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+        // Specify extension’s options like name, actionsDenylist, actionsCreators, serialize...
+      })
+    : compose;
 const epicMiddleware = createEpicMiddleware();
 
-const store = createStore(rootReducer, composeEnhancer(applyMiddleware(epicMiddleware)));
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(epicMiddleware)));
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

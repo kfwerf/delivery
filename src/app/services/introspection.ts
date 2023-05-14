@@ -8,6 +8,7 @@ export default function introspection(command: GrpCurlCommand, url = 'localhost:
     detect(command, url)
       .then(
         (registry) => {
+          console.log('success', registry);
           subscriber.next(registry);
         },
         (rejected) => {

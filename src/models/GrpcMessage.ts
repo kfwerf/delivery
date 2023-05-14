@@ -53,10 +53,13 @@ export default class GrpcMessage {
       .map(({ begin, end }) => {
         const oneOf = lines.slice(begin, end);
         const oneOfKey = getOneOfValue(oneOf[0]);
-        return oneOf.slice(1).map((line) => {
-          const { type, key, ordinal } = getMessagePropertyLine(line);
-          return new GrpcMessageProperty(line, type, key, ordinal, oneOfKey);
-        });
+        return oneOf
+          .slice(1)
+          .map((line) => {
+            const { type, key, ordinal } = getMessagePropertyLine(line);
+            return new GrpcMessageProperty(line, type, key, ordinal, oneOfKey);
+          })
+          .filter((property) => property.hasOneOfKey());
       })
       .reduce((a, b) => [...a, ...b], []);
     this.properties = []
