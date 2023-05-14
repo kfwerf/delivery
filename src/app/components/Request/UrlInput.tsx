@@ -15,9 +15,14 @@ export default function UrlInput(): JSX.Element {
   const isDisabled: boolean = useIntrospectionState((state) => state?.isLoading);
   const isLoading: boolean = useIntrospectionState((state) => state?.isLoading);
   const urls: string[] = useRequestState((state) => state?.urls);
+  const currentUrl: string = useRequestState((state) => state?.url);
 
   const dispatch = useAppDispatch();
   const onBlur = (url: string) => {
+    if (currentUrl === url) {
+      return;
+    }
+
     dispatch(updateUrl(url));
   };
 
